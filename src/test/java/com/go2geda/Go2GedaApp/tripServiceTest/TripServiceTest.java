@@ -6,11 +6,13 @@ import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.services.TripService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest
 public class TripServiceTest {
     private final TripService tripService;
 
