@@ -3,8 +3,11 @@ package com.go2geda.Go2GedaApp.configs;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
-@Setter
+import org.springframework.context.annotation.Configuration;
+
+
 @Getter
+@Configuration
 public class AppConfig {
     public final static  String SPACE = " ";
     public static final String ACTIVATE_ACCOUNT_PATH="/user/activate?code=";
