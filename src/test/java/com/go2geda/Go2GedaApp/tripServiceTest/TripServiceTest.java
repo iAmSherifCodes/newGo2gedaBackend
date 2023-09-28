@@ -32,27 +32,27 @@ public class TripServiceTest {
     @Test
     public void testThatDriverCanCreateTrip() throws NotFoundException {
         DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("cashgraphicx@gmail.com");
+        firstDriverUser.setEmail("obinaligoodness@gmail.com");
         firstDriverUser.setFirstName("Sherif");
         firstDriverUser.setLastName("Play");
         firstDriverUser.setPhoneNumber("90787878");
         firstDriverUser.setPassword("deyplaypassword");
 
-//        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-//        CreateTripRequest createTripRequest = new CreateTripRequest();
-//        LocalDateTime localDateTime = LocalDateTime.now();
-//        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-//        createTripRequest.setFrom("Abulegba");
-//        createTripRequest.setTo("Ojuelegba");
-//        createTripRequest.setPricePerSeat(1000);
-//        createTripRequest.setNumberOfSeats(3);
-//        createTripRequest.setPickUpTime(localDateTime);
-//        createTripRequest.setEndTime(endTime);
-//        createTripRequest.setStartTime(endTime);
-//        createTripRequest.setTripStatus("CREATED");
-//
-//        OkResponse response = tripService.createTrip(createTripRequest,"cashgraphicx@gmail.com");
-//        assertThat(response).isNotNull();
+        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
+        CreateTripRequest createTripRequest = new CreateTripRequest();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
+        createTripRequest.setFrom("Abulegba");
+        createTripRequest.setTo("Ojuelegba");
+        createTripRequest.setPricePerSeat(1000);
+        createTripRequest.setNumberOfSeats(3);
+        createTripRequest.setPickUpTime(localDateTime);
+        createTripRequest.setEndTime(endTime);
+        createTripRequest.setStartTime(endTime);
+        createTripRequest.setTripStatus("CREATED");
+
+        OkResponse response = tripService.createTrip(createTripRequest,"obinaligoodness@gmail.com");
+        assertThat(response).isNotNull();
 
     }
 }
