@@ -95,13 +95,13 @@ public class TripServiceImplementation implements TripService {
     }
 
     @Override
-    public OkResponse bookTrip(Long commuterId, Long tripId) throws NotFoundException {
+    public OkResponse bookTrip(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
 
         Notification  notification = new Notification();
-        Optional<Commuter> commuter = commuterRepository.findById(commuterId);
+        Optional<Commuter> commuter = commuterRepository.findById(acceptAndRejectRequest.getCommuterId());
         Commuter foundCommuter = commuter.orElseThrow(()->new NotFoundException("Commuter not found"));
-        Trip foundTrip = viewTrip(tripId);
-        notification.setSenderId(commuterId);
+        Trip foundTrip = viewTrip(acceptAndRejectRequest.getTripId());
+        notification.setSenderId(acceptAndRejectRequest.getCommuterId());
         notification.setReceiverId(foundTrip.getDriver().getId());
         notification.setMessageContent(foundCommuter
                 .getUser()

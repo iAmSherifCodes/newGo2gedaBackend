@@ -88,7 +88,10 @@ public class TripServiceTest {
     }
     @Test
     public void testThatCommuterCanBookTrip() throws NotFoundException {
-        tripService.bookTrip(1L,2L);
+        AcceptAndRejectRequest acceptAndRejectRequest = new AcceptAndRejectRequest();
+        acceptAndRejectRequest.setTripId(2L);
+        acceptAndRejectRequest.setCommuterId(1L);
+        tripService.bookTrip(acceptAndRejectRequest);
         var foundTrip = tripService.viewTrip(2L);
         assertThat(foundTrip.getDriver().getNotificationList()).isNotNull();
         System.out.println(foundTrip.getDriver().getNotificationList());

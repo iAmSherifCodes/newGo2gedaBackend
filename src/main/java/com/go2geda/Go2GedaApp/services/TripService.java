@@ -14,7 +14,7 @@ public interface TripService {
     OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException;
     OkResponse cancelTrip(long tripId) throws NotFoundException;
 
-    OkResponse bookTrip (Long commuterId, Long TripId) throws NotFoundException;
+    OkResponse bookTrip (AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException;
     OkResponse acceptTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException;
     OkResponse rejectTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException;
 

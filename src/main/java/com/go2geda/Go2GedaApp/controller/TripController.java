@@ -105,5 +105,14 @@ public class TripController {
         }
     }
 
+    @PostMapping("/bookTrip")
+    public ResponseEntity<OkResponse> bookTrip(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
+        try {
+            return new ResponseEntity<>(tripService.bookTrip(acceptAndRejectRequest), HttpStatus.ACCEPTED);
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
