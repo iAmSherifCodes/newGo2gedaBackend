@@ -11,8 +11,8 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @ManyToOne
-    private User user;
+    private Long senderId;
+    private Long receiverId;
     private String review;
 
 }
