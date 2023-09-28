@@ -6,14 +6,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+//@Component
 public interface ReviewService {
+//    Review createReview(ReviewRequest reviewRequest);
+//    List<Review> getReviewOfAUsers(Long userId);
+//    Review getReviewById(Long id);
+
     Review createReview(ReviewRequest reviewRequest);
-    List<Review> getReviewOfAUsers(Long userId);
+    List<Review> getReviewOfAUsers(Long receiverId);
     Review getReviewById(Long id);
-
-
-
 
 
 

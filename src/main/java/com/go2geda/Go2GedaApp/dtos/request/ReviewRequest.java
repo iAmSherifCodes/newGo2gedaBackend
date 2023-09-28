@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ReviewRequest {
-    private Long userid;
+    private Long id;
+    private Long senderId;
+    private Long receiverId;
     private String review;
 }
