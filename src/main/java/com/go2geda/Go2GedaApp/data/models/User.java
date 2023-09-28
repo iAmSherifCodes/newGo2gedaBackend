@@ -17,7 +17,7 @@ public class User {
     private Long id;
     @OneToOne(cascade = CascadeType.ALL)
     private BasicInformation basicInformation;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Review> reviews;
     @OneToMany
     private List<Trip>trips;
