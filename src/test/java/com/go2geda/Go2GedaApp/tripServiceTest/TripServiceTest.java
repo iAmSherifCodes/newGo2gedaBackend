@@ -1,5 +1,6 @@
 package com.go2geda.Go2GedaApp.tripServiceTest;
 
+import com.go2geda.Go2GedaApp.data.models.TripStatus;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
 import com.go2geda.Go2GedaApp.dtos.request.DriverRegisterUserRequest;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
@@ -54,5 +55,19 @@ public class TripServiceTest {
         OkResponse response = tripService.createTrip(createTripRequest,"obinaligoodness@gmail.com");
         assertThat(response).isNotNull();
 
+    }
+    @Test
+    public void testThatDriverCanCancelTrip() throws NotFoundException {
+        var canceledTrip = tripService.cancelTrip(1L);
+        var foundTrip = tripService.viewTrip(1L);
+        assertThat(foundTrip.getTripStatus().equals(TripStatus.CANCELED));
+        System.out.println(foundTrip.getTripStatus());
+    }
+
+    @Test
+    public void testThatDriverCanStartTrip() throws NotFoundException {
+        var startedTrip = tripService.startTrip(1L);
+        var foundTrip = tripService.viewTrip(1L);
+        assertThat(foundTrip.getTripStatus()==TripStatus.STARTED);
     }
 }

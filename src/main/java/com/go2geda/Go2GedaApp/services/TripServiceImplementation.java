@@ -87,6 +87,7 @@ public class TripServiceImplementation implements TripService {
         Optional<Trip> trip = tripRepository.findById(tripId);
         Trip foundTrip = trip.orElseThrow(()->new NotFoundException("Trip not found"));
         foundTrip.setTripStatus(TripStatus.CANCELED);
+        tripRepository.save(foundTrip);
         OkResponse okResponse = new OkResponse();
         okResponse.setMessage("Trip canceled Successfully");
         return okResponse;
