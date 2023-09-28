@@ -1,6 +1,7 @@
 package com.go2geda.Go2GedaApp.data.models;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
+@Data
 public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,6 +27,6 @@ public class Trip {
     private LocalDateTime startTime;
     @ManyToOne
     private Driver driver;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Commuter> commuter;
 }

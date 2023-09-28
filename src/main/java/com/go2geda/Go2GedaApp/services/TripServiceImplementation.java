@@ -1,6 +1,7 @@
 package com.go2geda.Go2GedaApp.services;
 
 import com.go2geda.Go2GedaApp.data.models.*;
+import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
@@ -61,9 +62,9 @@ public class TripServiceImplementation implements TripService {
     }
 
     @Override
-    public OkResponse createTrip(CreateTripRequest createTripRequest, String email) throws NotFoundException {
+    public OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException {
         Trip trip = new Trip();
-        Optional<Driver> driver= driverRepository.findDriverByEmail(email);
+        Optional<Driver> driver= driverRepository.findDriverByEmail(createTripRequest.getEmail());
         Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this email does not exist"));
         trip.setPickup(createTripRequest.getFrom());
         trip.setDestination(createTripRequest.getTo());
@@ -121,12 +122,12 @@ public class TripServiceImplementation implements TripService {
     }
 
     @Override
-    public OkResponse acceptTripRequest(Long commuterId, Long tripId) throws NotFoundException {
+    public OkResponse acceptTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
 
-        Optional<Commuter> commuter = commuterRepository.findById(commuterId);
+        Optional<Commuter> commuter = commuterRepository.findById(acceptAndRejectRequest.getCommuterId());
         Commuter foundCommuter = commuter.orElseThrow(()->new NotFoundException("Commuter not found"));
 
-        Optional<Trip> trip = tripRepository.findById(tripId);
+        Optional<Trip> trip = tripRepository.findById(acceptAndRejectRequest.getTripId());
         Trip foundTrip = trip.orElseThrow(()->new NotFoundException("Trip not found"));
 
         foundTrip.getCommuter().add(foundCommuter);
@@ -138,6 +139,7 @@ public class TripServiceImplementation implements TripService {
         notification.setMessageContent("you request to join "+ foundTrip +" has been accepted");
         Notification savedNotification = notificationRepository.save(notification);
         foundCommuter.getNotifications().add(savedNotification);
+        commuterRepository.save(foundCommuter);
 
         OkResponse okResponse = new OkResponse();
         okResponse.setMessage("successful");
@@ -145,11 +147,11 @@ public class TripServiceImplementation implements TripService {
     }
 
     @Override
-    public OkResponse rejectTripResponse(Long commuterId, Long tripId) throws NotFoundException {
+    public OkResponse rejectTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
 
-        Optional<Commuter> commuter = commuterRepository.findById(commuterId);
+        Optional<Commuter> commuter = commuterRepository.findById(acceptAndRejectRequest.getCommuterId());
         Commuter foundCommuter = commuter.orElseThrow(()->new NotFoundException("Commuter not found"));
-        Optional<Trip> trip = tripRepository.findById(tripId);
+        Optional<Trip> trip = tripRepository.findById(acceptAndRejectRequest.getTripId());
         Trip foundTrip = trip.orElseThrow(()->new NotFoundException("Trip not found"));
 
         Notification notification = new Notification();
@@ -197,13 +199,23 @@ public class TripServiceImplementation implements TripService {
     }
 
     @Override
-    public List<Trip> viewCommuterBookedTrips(Long commuterId) {
-
+    public List<Trip> viewCommuterBookedTrips(Long commuterId) throws NotFoundException {
+        List<Trip> commuterBookedTrip = new ArrayList<>();
         List<Trip> allTrip = tripRepository.findAll();
         boolean bookedTrip = false;
         for (int i = 0; i < allTrip.size(); i++) {
-
+            if (allTrip.get(i).getTripStatus()==TripStatus.CREATED){
+                for (int j = 0; j < allTrip.get(i).getCommuter().size(); j++) {
+                    if(allTrip.get(i).getCommuter().get(j).getId().equals(commuterId)){
+                        commuterBookedTrip.add(allTrip.get(i));
+                        bookedTrip = true;
+                    }
+                }
+            }
         }
-        return null;
+        if (!bookedTrip) {
+            throw new NotFoundException("No Available Trip For the Route");
+        }
+        return commuterBookedTrip;
     }
 }

@@ -19,7 +19,7 @@ public class Driver {
     private Fleet fleet;
     @OneToOne(cascade = CascadeType.ALL)
     private DriverInformation driverInformation;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Notification> notificationList;
 
 

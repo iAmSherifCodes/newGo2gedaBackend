@@ -16,6 +16,6 @@ public class Commuter{
     private Long id;
     @OneToOne(cascade = CascadeType.ALL)
     private User user;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Notification> notifications;
 }

@@ -16,4 +16,5 @@ public class CreateTripRequest {
     private LocalDateTime endTime;
     private LocalDateTime startTime;
     private String TripStatus;
+    private String email;
 }
