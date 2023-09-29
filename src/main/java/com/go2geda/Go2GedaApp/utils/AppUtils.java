@@ -19,11 +19,8 @@ public class AppUtils {
     public static final String UPLOAD_SUCCESSFUL = "UPLOAD_SUCCESSFUL";
 
     public static final String VERIFICATION_SUCCESSFUL = "VERIFICATION_SUCCESSFUL";
-<<<<<<< HEAD
-    private static final String MAIL_TEMPLATE_LOCATION = "C:\\Users\\DELL\\Downloads\\Go2GedaApp\\Go2GedaApp\\src\\main\\resources\\templates\\emailHtml.html";
-=======
     private static final String MAIL_TEMPLATE_LOCATION = "C:\\Users\\USER\\IdeaProjects\\SpringProjects\\newGo2gedaBackend2\\src\\main\\resources\\templates\\emailHtml.html";
->>>>>>> 39e49ca33b4cf627ebe61a8f4b76d7b896445109
+
 
     public static String getMailTemplate() {
         Path templateLocation = Paths.get(MAIL_TEMPLATE_LOCATION);

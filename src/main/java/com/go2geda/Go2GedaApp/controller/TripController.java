@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/trip")
 @AllArgsConstructor
+@CrossOrigin("*")
 public class TripController {
     private final TripService tripService;
     @PostMapping("/createTrip")
