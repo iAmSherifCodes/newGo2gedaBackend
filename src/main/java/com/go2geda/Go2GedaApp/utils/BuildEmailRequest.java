@@ -34,5 +34,19 @@ public class BuildEmailRequest {
         request.setHtmlContent(mailContent);
         return request;
     }
+    public EmailSenderRequest buildEmailRequestCommuter(User savedUser){
+        EmailSenderRequest request =new EmailSenderRequest();
+        List<MailInfo> recipients = new ArrayList<>();
+        MailInfo recipient = new MailInfo(savedUser.getBasicInformation().getFirstName() + SPACE + savedUser.getBasicInformation().getLastName(), savedUser.getBasicInformation().getEmail());
+        recipients.add(recipient);
+        request.setTo(recipients);
+        request.setSubject(WELCOME_MAIL_SUBJECT);
+        String activationLink =
+                generateActivationLink(appConfig.getBaseUrl(), savedUser.getBasicInformation().getEmail());
+        String emailTemplate = getMailTemplate();
+        String mailContent = String.format(emailTemplate, savedUser.getBasicInformation().getFirstName(), activationLink);
+        request.setHtmlContent(mailContent);
+        return request;
+    }
 }
 
