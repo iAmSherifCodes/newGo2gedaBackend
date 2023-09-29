@@ -1,5 +1,4 @@
 package com.go2geda.Go2GedaApp.services;
-
 import com.go2geda.Go2GedaApp.configs.AppConfig;
 import com.go2geda.Go2GedaApp.dtos.request.EmailSenderRequest;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
@@ -13,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class BrevoMailService implements MailService{
     private final AppConfig appConfig;
-
     @Override
     public OkResponse send(EmailSenderRequest emailSenderRequest) {
 //        String brevoMailAddress = "https://api.brevo.com/v3/smtp/email";
@@ -23,10 +21,10 @@ public class BrevoMailService implements MailService{
         headers.set("Content-Type", "application/json");
         HttpEntity<EmailSenderRequest> request =
                 new HttpEntity<>(emailSenderRequest, headers);
-
         ResponseEntity<OkResponse> response =
                 restTemplate.postForEntity(appConfig.getBrevoMailAddress(), request, OkResponse.class);
         OkResponse emailNotificationResponse = response.getBody();
         return emailNotificationResponse;
     }
+
 }

@@ -15,11 +15,8 @@ import org.springframework.stereotype.Service;
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.REGISTRATION_SUCCESSFUL;
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.VERIFIED_SUCCESSFUL;
 import static com.go2geda.Go2GedaApp.exceptions.ExceptionMessage.USER_NOT_FOUND;
-
-
 @Service @AllArgsConstructor
 public class Go2gedaCommuterService implements CommuterService{
-
     private final BuildEmailRequest buildEmailRequest;
     private final CommuterRepository commuterRepository;
     private final MailService mailService;
@@ -48,7 +45,7 @@ public class Go2gedaCommuterService implements CommuterService{
 
         commuterRepository.save(newCommuter);
 
-        EmailSenderRequest emailSenderRequest = buildEmailRequest.buildEmailRequest(newUser);
+        EmailSenderRequest emailSenderRequest = buildEmailRequest.buildEmailRequestCommuter(newUser);
         mailService.send(emailSenderRequest);
 
         RegisterUserResponse response = new RegisterUserResponse();

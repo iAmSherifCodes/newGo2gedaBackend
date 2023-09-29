@@ -20,6 +20,7 @@ public class AppUtils {
 
     public static final String VERIFICATION_SUCCESSFUL = "VERIFICATION_SUCCESSFUL";
     private static final String MAIL_TEMPLATE_LOCATION = "C:\\Users\\USER\\IdeaProjects\\SpringProjects\\newGo2gedaBackend2\\src\\main\\resources\\templates\\emailHtml.html";
+    private static final String MAIL_TEMPLATE_LOCATION_COMMUTER = "C:\\Users\\USER\\IdeaProjects\\SpringProjects\\newGo2gedaBackend2\\src\\main\\resources\\templates\\commuterEmail.html";
 
 
     public static String getMailTemplate() {
@@ -32,6 +33,15 @@ public class AppUtils {
             throw new Go2gedaBaseException(exception.getMessage());
         }
     }
+    public static String getMailTemplateCommuter() {
+        Path templateLocation = Paths.get(MAIL_TEMPLATE_LOCATION_COMMUTER);
+        try {
+            List<String> fileContents = Files.readAllLines(templateLocation);
+            String template = String.join(EMPTY_STRING, fileContents);
+            return template;
+        } catch (IOException exception) {
+            throw new Go2gedaBaseException(exception.getMessage());
+        }}
     public static String generateActivationLink(String baseUrl, String email){
         String token = generateVerificationToken(email);
         return baseUrl+ACTIVATE_ACCOUNT_PATH+token;
