@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
-@RequestMapping("/api/v1/go2geda2")
-//@CrossOrigin("*")
+@RequestMapping("/api/v1/go2geda/driver")
+@CrossOrigin("*")
 @AllArgsConstructor
 public class DriverController {
     private final DriverService driverService;
