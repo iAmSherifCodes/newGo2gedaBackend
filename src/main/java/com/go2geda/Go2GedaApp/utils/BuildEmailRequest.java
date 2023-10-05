@@ -12,8 +12,7 @@ import java.util.List;
 
 import static com.go2geda.Go2GedaApp.configs.AppConfig.SPACE;
 import static com.go2geda.Go2GedaApp.configs.AppConfig.WELCOME_MAIL_SUBJECT;
-import static com.go2geda.Go2GedaApp.utils.AppUtils.generateActivationLink;
-import static com.go2geda.Go2GedaApp.utils.AppUtils.getMailTemplate;
+import static com.go2geda.Go2GedaApp.utils.AppUtils.*;
 
 @AllArgsConstructor
 @Configuration
@@ -43,7 +42,7 @@ public class BuildEmailRequest {
         request.setSubject(WELCOME_MAIL_SUBJECT);
         String activationLink =
                 generateActivationLink(appConfig.getBaseUrl(), savedUser.getBasicInformation().getEmail());
-        String emailTemplate = getMailTemplate();
+        String emailTemplate = getMailTemplateCommuter();
         String mailContent = String.format(emailTemplate, savedUser.getBasicInformation().getFirstName(), activationLink);
         request.setHtmlContent(mailContent);
         return request;

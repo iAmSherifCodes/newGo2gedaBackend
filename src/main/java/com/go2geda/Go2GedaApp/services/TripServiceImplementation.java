@@ -5,10 +5,7 @@ import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
-import com.go2geda.Go2GedaApp.repositories.CommuterRepository;
-import com.go2geda.Go2GedaApp.repositories.DriverRepository;
-import com.go2geda.Go2GedaApp.repositories.NotificationRepository;
-import com.go2geda.Go2GedaApp.repositories.TripRepository;
+import com.go2geda.Go2GedaApp.repositories.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +21,7 @@ public class TripServiceImplementation implements TripService {
     private final CommuterRepository commuterRepository;
     private final TripRepository tripRepository;
     private final NotificationRepository notificationRepository;
+    private final GroupRepository groupRepository;
 
     @Override
     public List<Trip> searchTripByFrom(String from) throws NotFoundException {
@@ -76,7 +74,13 @@ public class TripServiceImplementation implements TripService {
         trip.setTripStatus(TripStatus.CREATED);
         trip.setDriver(foundDriver);
         trip.setTripStatus(TripStatus.valueOf(createTripRequest.getTripStatus()));
+
+        Group group = new Group();
+        group.getParticipants().add(foundDriver.getUser());
+        Group savedGroup = groupRepository.save(group);
+        trip.setGroupChat(savedGroup);
         tripRepository.save(trip);
+
 
         OkResponse okResponse = new OkResponse();
         okResponse.setMessage("Trip has been created successfully");
@@ -129,7 +133,7 @@ public class TripServiceImplementation implements TripService {
 
         Optional<Trip> trip = tripRepository.findById(acceptAndRejectRequest.getTripId());
         Trip foundTrip = trip.orElseThrow(()->new NotFoundException("Trip not found"));
-
+        foundTrip.getGroupChat().getParticipants().add(foundCommuter.getUser());
         foundTrip.getCommuter().add(foundCommuter);
         tripRepository.save(foundTrip);
 
