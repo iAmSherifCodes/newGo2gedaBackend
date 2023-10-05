@@ -23,8 +23,8 @@ public class CommuterServiceTest {
     @Test
     void testCommuterCanRegister(){
         CommuterRegisterUserRequest firstCommuterUser = new CommuterRegisterUserRequest();
-        firstCommuterUser.setEmail("awofiranyesherif56789@gmail.com");
-        firstCommuterUser.setFirstName("Sheriffa");
+        firstCommuterUser.setEmail("woman@gmail.com");
+        firstCommuterUser.setFirstName("woman");
         firstCommuterUser.setLastName("Playplay");
         firstCommuterUser.setPhoneNumber("90787878");
         firstCommuterUser.setPassword("deyplaypassword");
