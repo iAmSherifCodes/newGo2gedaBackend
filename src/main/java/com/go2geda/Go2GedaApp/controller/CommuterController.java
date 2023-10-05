@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/go2geda")
-@CrossOrigin("*")
+@RequestMapping("/api/v1/go2geda/commuter")
+//@CrossOrigin("*")
 @AllArgsConstructor
 public class CommuterController {
     private final CommuterService commuterService;
@@ -24,14 +24,14 @@ public class CommuterController {
 //    private final  userService;
 
     @PostMapping("/register-commuter")
-    public ResponseEntity<RegisterUserResponse> registerCommuter(CommuterRegisterUserRequest request){
+    public ResponseEntity<RegisterUserResponse> registerCommuter(@RequestBody  CommuterRegisterUserRequest request){
         return new ResponseEntity<>(commuterService.register(request), HttpStatus.OK);
     }
 
-    @PostMapping("/register-driver")
-    public ResponseEntity<RegisterUserResponse> registerDriver(@RequestBody DriverRegisterUserRequest request){
-        return new ResponseEntity<>(driverService.register(request), HttpStatus.OK);
-    }
+//    @PostMapping("/register-driver")
+//    public ResponseEntity<RegisterUserResponse> registerDriver(@RequestBody DriverRegisterUserRequest request){
+//        return new ResponseEntity<>(driverService.register(request), HttpStatus.OK);
+//    }
 
     @GetMapping("/getCommuter/{commuterId}")
     public ResponseEntity<RegisterUserResponse> getCommuter(@PathVariable Long commuterId){
