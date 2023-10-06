@@ -37,11 +37,11 @@ public class DriverServiceTest {
     @Test
     void registerDriver(){
         DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("cashgraphicx@gmail.com");
-        firstDriverUser.setFirstName("Sherif");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
+        firstDriverUser.setEmail("oluchi@gmail.com");
+        firstDriverUser.setFirstName("Oluchi");
+        firstDriverUser.setLastName("Duru");
+        firstDriverUser.setPhoneNumber("08119863971");
+        firstDriverUser.setPassword("DuruOluchi");
 
         RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
 
@@ -53,7 +53,7 @@ public class DriverServiceTest {
     @Test
     void driverCanLoginUser(){
         DriverRegisterUserRequest firstDriver = new DriverRegisterUserRequest();
-        firstDriver.setEmail("driverlogin@gmail.com");
+        firstDriver.setEmail("driverlogin2@gmail.com");
         firstDriver.setFirstName("Dey");
         firstDriver.setLastName("Play");
         firstDriver.setPhoneNumber("90787878");
