@@ -23,11 +23,7 @@ public class AppUtils {
 
     private static final String MAIL_TEMPLATE_LOCATION_COMMUTER = "C:\\Users\\USER\\IdeaProjects\\SpringProjects\\newGo2gedaBackend2\\src\\main\\resources\\templates\\commuterEmail.html";
 
-    public static final Integer STATUS_CODE_OK = 200;
-    public static final Integer STATUS_CODE_CREATED = 201;
-    public static final String PAYSTACK_INIT = "https://api.paystack.co/plan";
-    public static final String PAYSTACK_INITIALIZE_PAY = "https://api.paystack.co/transaction/initialize";
-    public static final String PAYSTACK_VERIFY = "https://api.paystack.co/transaction/verify/";
+
 
     public static String getMailTemplate() {
         Path templateLocation = Paths.get(MAIL_TEMPLATE_LOCATION);

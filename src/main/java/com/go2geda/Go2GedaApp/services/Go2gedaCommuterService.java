@@ -6,8 +6,10 @@ import com.go2geda.Go2GedaApp.dtos.request.CommuterRegisterUserRequest;
 import com.go2geda.Go2GedaApp.dtos.request.EmailSenderRequest;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
+import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
 import com.go2geda.Go2GedaApp.repositories.CommuterRepository;
+import com.go2geda.Go2GedaApp.repositories.UserRepository;
 import com.go2geda.Go2GedaApp.utils.BuildEmailRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class Go2gedaCommuterService implements CommuterService{
     private final BuildEmailRequest buildEmailRequest;
     private final CommuterRepository commuterRepository;
     private final MailService mailService;
+    private final UserRepository userRepository;
     @Override
     public RegisterUserResponse register(CommuterRegisterUserRequest request) {
         String firstName = request.getFirstName();
@@ -38,6 +41,7 @@ public class Go2gedaCommuterService implements CommuterService{
         basicInformation.setPhoneNumber(phoneNumber);
 
         newUser.setRole(Role.COMMUTER);
+        newUser.setActive(true);
         newUser.setBasicInformation(basicInformation);
 
         Commuter newCommuter = new Commuter();
@@ -50,7 +54,11 @@ public class Go2gedaCommuterService implements CommuterService{
 
         RegisterUserResponse response = new RegisterUserResponse();
         response.setMessage(REGISTRATION_SUCCESSFUL.name());
-
+        response.setFirstName(basicInformation.getFirstName());
+        response.setLastName(basicInformation.getLastName());
+        response.setPhoneNumber(basicInformation.getPhoneNumber());
+        response.setPassword(basicInformation.getPassword());
+        response.setEmail(basicInformation.getEmail());
         return response;
     }
 
@@ -73,6 +81,22 @@ public class Go2gedaCommuterService implements CommuterService{
         OkResponse response = new OkResponse();
         response.setMessage(VERIFIED_SUCCESSFUL.name());
 
+        return response;
+    }
+
+    @Override
+    public RegisterUserResponse findCommuterById(Long commuterId) throws NotFoundException {
+        var commuter = commuterRepository.findById(commuterId);
+        var foundCommuter = commuter.orElseThrow(()-> new NotFoundException("commuter not found"));
+        var user = foundCommuter.getUser();
+        var basicInformation =user.getBasicInformation();
+        RegisterUserResponse response = new RegisterUserResponse();
+        response.setMessage(REGISTRATION_SUCCESSFUL.name());
+        response.setFirstName(basicInformation.getFirstName());
+        response.setLastName(basicInformation.getLastName());
+        response.setPhoneNumber(basicInformation.getPhoneNumber());
+        response.setPassword(basicInformation.getPassword());
+        response.setEmail(basicInformation.getEmail());
         return response;
     }
 

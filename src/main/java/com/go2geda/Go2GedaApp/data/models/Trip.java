@@ -29,4 +29,6 @@ public class Trip {
     private Driver driver;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Commuter> commuter;
+    @OneToOne
+    private Group groupChat;
 }
