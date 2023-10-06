@@ -61,8 +61,7 @@ public class Go2gedaDriverService implements  DriverService{
 
         RegisterUserResponse response = new RegisterUserResponse();
         response.setMessage(REGISTRATION_SUCCESSFUL.name());
-
-
+        response.setId(savedDriver.getId());
         return response;
     }
 
