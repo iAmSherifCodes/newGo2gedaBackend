@@ -7,4 +7,5 @@ import lombok.Setter;
 @Getter
 public class OkResponse {
     private String message;
+    private Long id;
 }

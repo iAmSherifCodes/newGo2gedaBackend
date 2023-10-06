@@ -4,6 +4,7 @@ import com.go2geda.Go2GedaApp.data.models.*;
 import com.go2geda.Go2GedaApp.dtos.request.*;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
+import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
 import com.go2geda.Go2GedaApp.repositories.DriverRepository;
 import com.go2geda.Go2GedaApp.repositories.TripRepository;
@@ -33,6 +34,14 @@ public class Go2gedaDriverService implements  DriverService{
         String firstName = request.getFirstName();
         String lastName = request.getLastName();
         String email = request.getEmail();
+        var foundDriver = driverRepository.findDriverByEmail(email);
+        if (foundDriver.get()==null){
+            try {
+                throw new NotFoundException("User with this email already exist");
+            } catch (NotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
         String password = request.getPassword();
         String phoneNumber = request.getPhoneNumber();
 
@@ -61,8 +70,7 @@ public class Go2gedaDriverService implements  DriverService{
 
         RegisterUserResponse response = new RegisterUserResponse();
         response.setMessage(REGISTRATION_SUCCESSFUL.name());
-
-
+        response.setId(savedDriver.getId());
         return response;
     }
 

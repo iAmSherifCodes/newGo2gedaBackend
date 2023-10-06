@@ -21,7 +21,7 @@ public class TripServiceImplementation implements TripService {
     private final CommuterRepository commuterRepository;
     private final TripRepository tripRepository;
     private final NotificationRepository notificationRepository;
-    private final GroupRepository groupRepository;
+
 
     @Override
     public List<Trip> searchTripByFrom(String from) throws NotFoundException {
@@ -75,14 +75,12 @@ public class TripServiceImplementation implements TripService {
         trip.setDriver(foundDriver);
         trip.setTripStatus(TripStatus.valueOf(createTripRequest.getTripStatus()));
 
-        Group group = new Group();
-        group.getParticipants().add(foundDriver.getUser());
-        Group savedGroup = groupRepository.save(group);
-        trip.setGroupChat(savedGroup);
-        tripRepository.save(trip);
+
+        Trip savedTrip =tripRepository.save(trip);
 
 
         OkResponse okResponse = new OkResponse();
+        okResponse.setId(savedTrip.getId());
         okResponse.setMessage("Trip has been created successfully");
         return okResponse;
     }
@@ -107,7 +105,7 @@ public class TripServiceImplementation implements TripService {
         Trip foundTrip = viewTrip(acceptAndRejectRequest.getTripId());
         notification.setSenderId(acceptAndRejectRequest.getCommuterId());
         notification.setReceiverId(foundTrip.getDriver().getId());
-        notification.setMessageContent(foundCommuter
+        notification.setMessage(foundCommuter
                 .getUser()
                 .getBasicInformation()
                 .getFirstName()
@@ -133,14 +131,13 @@ public class TripServiceImplementation implements TripService {
 
         Optional<Trip> trip = tripRepository.findById(acceptAndRejectRequest.getTripId());
         Trip foundTrip = trip.orElseThrow(()->new NotFoundException("Trip not found"));
-        foundTrip.getGroupChat().getParticipants().add(foundCommuter.getUser());
         foundTrip.getCommuter().add(foundCommuter);
         tripRepository.save(foundTrip);
 
         Notification notification = new Notification();
         notification.setReceiverId(foundCommuter.getId());
         notification.setSenderId(foundTrip.getDriver().getId());
-        notification.setMessageContent("you request to join "+ foundTrip +" has been accepted");
+        notification.setMessage("you request to join "+ foundTrip +" has been accepted");
         Notification savedNotification = notificationRepository.save(notification);
         foundCommuter.getNotifications().add(savedNotification);
         commuterRepository.save(foundCommuter);
@@ -161,7 +158,8 @@ public class TripServiceImplementation implements TripService {
         Notification notification = new Notification();
         notification.setReceiverId(foundCommuter.getId());
         notification.setSenderId(foundTrip.getDriver().getId());
-        notification.setMessageContent("you request to join "+ foundTrip +" has been rejected");
+        notification.setMessage("you request to join "+ foundTrip.getPickup() + foundTrip.getDestination() +" has been rejected");
+
         Notification savedNotification = notificationRepository.save(notification);
         foundCommuter.getNotifications().add(savedNotification);
 

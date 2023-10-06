@@ -28,6 +28,14 @@ public class Go2gedaCommuterService implements CommuterService{
         String firstName = request.getFirstName();
         String lastName = request.getLastName();
         String email = request.getEmail();
+        var foundCommuter = commuterRepository.findByUserBasicInformationEmail(email);
+        if (foundCommuter.get()==null){
+            try {
+                throw new NotFoundException("User with this email already exist");
+            } catch (NotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
         String password = request.getPassword();
         String phoneNumber = request.getPhoneNumber();
 
@@ -59,6 +67,7 @@ public class Go2gedaCommuterService implements CommuterService{
         response.setPhoneNumber(basicInformation.getPhoneNumber());
         response.setPassword(basicInformation.getPassword());
         response.setEmail(basicInformation.getEmail());
+        response.setId(newCommuter.getId());
         return response;
     }
 
