@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/go2geda/commuter")
-//@CrossOrigin("*")
+@CrossOrigin("*")
 @AllArgsConstructor
 public class CommuterController {
     private final CommuterService commuterService;
