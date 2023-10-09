@@ -63,7 +63,6 @@ public class TripServiceTest {
         createTripRequest.setPickUpTime("12/12/2023, 12:12:30 PM");
         createTripRequest.setEndTime(endTime);
         createTripRequest.setStartTime(endTime);
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
 
         firstCommuterUser = new CommuterRegisterUserRequest();
         firstCommuterUser.setEmail("woman@gmail.com");

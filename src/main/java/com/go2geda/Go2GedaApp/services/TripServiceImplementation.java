@@ -85,7 +85,7 @@ public class TripServiceImplementation implements TripService {
     @Override
     public OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException {
         Trip trip = new Trip();
-        Optional<Driver> driver= driverRepository.findDriverByEmail(createTripRequest.getEmail());
+        Optional<Driver> driver= driverRepository.findDriverById(createTripRequest.getDriverId());
         Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this email does not exist"));
         trip.setPickup(createTripRequest.getFrom());
         trip.setDestination(createTripRequest.getTo());
