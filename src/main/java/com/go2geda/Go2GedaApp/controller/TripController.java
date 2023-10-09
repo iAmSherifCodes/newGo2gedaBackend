@@ -7,6 +7,7 @@ import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
 import com.go2geda.Go2GedaApp.dtos.response.AcceptRequestNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.response.BookingNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
+import com.go2geda.Go2GedaApp.dtos.response.RejectRequestNotificationResponse;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.services.TripService;
 import lombok.AllArgsConstructor;
@@ -102,7 +103,7 @@ public class TripController {
         }
     }
     @PostMapping("/rejectTrip")
-    public ResponseEntity<OkResponse> rejectTripRequest(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
+    public ResponseEntity<RejectRequestNotificationResponse> rejectTripRequest(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
         try {
             return new ResponseEntity<>(tripService.rejectTripRequest(acceptAndRejectRequest), HttpStatus.OK);
         } catch (NotFoundException e) {

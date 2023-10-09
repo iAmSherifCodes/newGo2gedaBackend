@@ -29,6 +29,18 @@ public class TripServiceImplementation implements TripService {
 
 
     @Override
+    public List<Trip> searchTripByFromAndTo(String from, String to) {
+        List<Trip> availableTrips = new ArrayList<>();
+        List<Trip> foundTrips = tripRepository.findTripByPickupAndDestination(from,to);
+        boolean hasCreatedTrips = false;
+        for (int i = 0; i < ; i++) {
+
+        }
+
+        return null;
+    }
+
+    @Override
     public List<Trip> searchTripByFrom(String from) throws NotFoundException {
         List<Trip> availableTrips = new ArrayList<>();
         List<Trip> foundTrips = tripRepository.findTripByPickup(from);
@@ -184,7 +196,7 @@ public class TripServiceImplementation implements TripService {
         RejectRequestNotificationResponse rejectRequestNotificationResponse = new RejectRequestNotificationResponse();
         rejectRequestNotificationResponse.setFirstName(foundTrip.getDriver().getUser().getBasicInformation().getFirstName());
         rejectRequestNotificationResponse.setLastName(foundTrip.getDriver().getUser().getBasicInformation().getLastName());
-        rejectRequestNotificationResponse.setUrl(foundTrip.getDriver().getUser().getProfilePicture();
+        rejectRequestNotificationResponse.setUrl(foundTrip.getDriver().getUser().getProfilePicture());
         return rejectRequestNotificationResponse;
     }
 
