@@ -4,6 +4,7 @@ package com.go2geda.Go2GedaApp.controller;
 import com.go2geda.Go2GedaApp.data.models.Trip;
 import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
+import com.go2geda.Go2GedaApp.dtos.request.SearchTripRequest;
 import com.go2geda.Go2GedaApp.dtos.response.AcceptRequestNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.response.BookingNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
@@ -11,6 +12,7 @@ import com.go2geda.Go2GedaApp.dtos.response.RejectRequestNotificationResponse;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.services.TripService;
 import lombok.AllArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -120,5 +122,13 @@ public class TripController {
         }
     }
 
+    @PostMapping("/searchTripByFromAndTo")
+    public ResponseEntity<List<Trip>> searchTripByFromAndTo(@RequestBody SearchTripRequest searchTripRequest){
+        try {
+            return new ResponseEntity<>(tripService.searchTripByFromAndTo(searchTripRequest), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

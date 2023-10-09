@@ -2,6 +2,7 @@ package com.go2geda.Go2GedaApp.services;
 
 import com.go2geda.Go2GedaApp.data.models.*;
 import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
+import com.go2geda.Go2GedaApp.dtos.request.SearchTripRequest;
 import com.go2geda.Go2GedaApp.dtos.response.AcceptRequestNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.response.BookingNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
@@ -29,15 +30,20 @@ public class TripServiceImplementation implements TripService {
 
 
     @Override
-    public List<Trip> searchTripByFromAndTo(String from, String to) {
+    public List<Trip> searchTripByFromAndTo(SearchTripRequest searchTripRequest) throws NotFoundException {
         List<Trip> availableTrips = new ArrayList<>();
-        List<Trip> foundTrips = tripRepository.findTripByPickupAndDestination(from,to);
+        List<Trip> foundTrips = tripRepository.findTripByPickupAndDestination(searchTripRequest.getFrom(),searchTripRequest.getTo());
         boolean hasCreatedTrips = false;
         for (int i = 0; i < foundTrips.size(); i++) {
-
+            if (foundTrips.get(i).getTripStatus().equals(TripStatus.CREATED)){
+                availableTrips.add(foundTrips.get(i));
+                hasCreatedTrips = true;
+            }
         }
-
-        return null;
+        if (!hasCreatedTrips){
+            throw new NotFoundException("No available Trip For the Route");
+        }
+        return availableTrips;
     }
 
     @Override
