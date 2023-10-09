@@ -1,5 +1,6 @@
 package com.go2geda.Go2GedaApp.data.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -17,5 +18,6 @@ public class Notification {
     private Long id;
     private Long senderId;
     private Long receiverId;
-    private String messageContent;
+    @Column(length = 255)
+    private String message;
 }

@@ -19,6 +19,7 @@ public class AppUtils {
     public static final String UPLOAD_SUCCESSFUL = "UPLOAD_SUCCESSFUL";
 
     public static final String VERIFICATION_SUCCESSFUL = "VERIFICATION_SUCCESSFUL";
+
     private static final String MAIL_TEMPLATE_LOCATION = "C:\\Users\\USER\\IdeaProjects\\SpringProjects\\newGo2gedaBackend2\\src\\main\\resources\\templates\\emailHtml.html";
 
     private static final String MAIL_TEMPLATE_LOCATION_COMMUTER = "C:\\Users\\USER\\IdeaProjects\\SpringProjects\\newGo2gedaBackend2\\src\\main\\resources\\templates\\commuterEmail.html";

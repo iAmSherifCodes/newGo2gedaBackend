@@ -59,6 +59,7 @@ public class Go2gedaCommuterService implements CommuterService{
         response.setPhoneNumber(basicInformation.getPhoneNumber());
         response.setPassword(basicInformation.getPassword());
         response.setEmail(basicInformation.getEmail());
+        response.setId(newCommuter.getId());
         return response;
     }
 

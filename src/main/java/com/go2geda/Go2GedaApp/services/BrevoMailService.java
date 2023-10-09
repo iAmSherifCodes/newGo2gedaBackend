@@ -14,7 +14,7 @@ public class BrevoMailService implements MailService{
     private final AppConfig appConfig;
     @Override
     public OkResponse send(EmailSenderRequest emailSenderRequest) {
-//        String brevoMailAddress = "https://api.brevo.com/v3/smtp/email";
+        String brevoMailAddress = "https://api.brevo.com/v3/smtp/email";
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("api-key", appConfig.getMailApiKey());
