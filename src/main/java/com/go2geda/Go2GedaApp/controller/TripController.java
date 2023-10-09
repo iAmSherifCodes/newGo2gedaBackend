@@ -4,6 +4,8 @@ package com.go2geda.Go2GedaApp.controller;
 import com.go2geda.Go2GedaApp.data.models.Trip;
 import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
+import com.go2geda.Go2GedaApp.dtos.response.AcceptRequestNotificationResponse;
+import com.go2geda.Go2GedaApp.dtos.response.BookingNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.services.TripService;
@@ -92,7 +94,7 @@ public class TripController {
     }
 
     @PostMapping("/acceptTrip")
-    public ResponseEntity<OkResponse> acceptTripRequest(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
+    public ResponseEntity<AcceptRequestNotificationResponse> acceptTripRequest(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
         try {
             return new ResponseEntity<>(tripService.acceptTripRequest(acceptAndRejectRequest), HttpStatus.OK);
         } catch (NotFoundException e) {
@@ -109,7 +111,7 @@ public class TripController {
     }
 
     @PostMapping("/bookTrip")
-    public ResponseEntity<OkResponse> bookTrip(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
+    public ResponseEntity<BookingNotificationResponse> bookTrip(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
         try {
             return new ResponseEntity<>(tripService.bookTrip(acceptAndRejectRequest), HttpStatus.ACCEPTED);
         } catch (NotFoundException e) {

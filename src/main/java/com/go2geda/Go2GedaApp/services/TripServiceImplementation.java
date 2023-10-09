@@ -2,8 +2,11 @@ package com.go2geda.Go2GedaApp.services;
 
 import com.go2geda.Go2GedaApp.data.models.*;
 import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
+import com.go2geda.Go2GedaApp.dtos.response.AcceptRequestNotificationResponse;
+import com.go2geda.Go2GedaApp.dtos.response.BookingNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
+import com.go2geda.Go2GedaApp.dtos.response.RejectRequestNotificationResponse;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.repositories.*;
 import lombok.AllArgsConstructor;
@@ -108,7 +111,7 @@ public class TripServiceImplementation implements TripService {
     }
 
     @Override
-    public OkResponse bookTrip(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
+    public BookingNotificationResponse bookTrip(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
 
         Notification  notification = new Notification();
         Optional<Commuter> commuter = commuterRepository.findById(acceptAndRejectRequest.getCommuterId());
@@ -129,13 +132,15 @@ public class TripServiceImplementation implements TripService {
         Driver driver = foundTrip.getDriver();
         driver.getNotificationList().add(savedNotification);
         driverRepository.save(driver);
-        OkResponse okResponse = new OkResponse();
-        okResponse.setMessage("trip booked successfully");
-        return okResponse;
+        BookingNotificationResponse bookingNotificationResponse = new BookingNotificationResponse();
+        bookingNotificationResponse.setFirstName(foundCommuter.getUser().getBasicInformation().getFirstName());
+        bookingNotificationResponse.setLastName(foundCommuter.getUser().getBasicInformation().getLastName());
+        bookingNotificationResponse.setUrl(foundCommuter.getUser().getProfilePicture());
+        return bookingNotificationResponse;
     }
 
     @Override
-    public OkResponse acceptTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
+    public AcceptRequestNotificationResponse acceptTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
 
         Optional<Commuter> commuter = commuterRepository.findById(acceptAndRejectRequest.getCommuterId());
         Commuter foundCommuter = commuter.orElseThrow(()->new NotFoundException("Commuter not found"));
@@ -153,13 +158,15 @@ public class TripServiceImplementation implements TripService {
         foundCommuter.getNotifications().add(savedNotification);
         commuterRepository.save(foundCommuter);
 
-        OkResponse okResponse = new OkResponse();
-        okResponse.setMessage("successful");
-        return okResponse;
+        AcceptRequestNotificationResponse acceptRequestNotificationResponse = new AcceptRequestNotificationResponse();
+        acceptRequestNotificationResponse.setFirstName(foundTrip.getDriver().getUser().getBasicInformation().getFirstName());
+        acceptRequestNotificationResponse.setLastName(foundTrip.getDriver().getUser().getBasicInformation().getLastName());
+        acceptRequestNotificationResponse.setUrl(foundTrip.getDriver().getUser().getProfilePicture());
+        return acceptRequestNotificationResponse;
     }
 
     @Override
-    public OkResponse rejectTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
+    public RejectRequestNotificationResponse rejectTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
 
         Optional<Commuter> commuter = commuterRepository.findById(acceptAndRejectRequest.getCommuterId());
         Commuter foundCommuter = commuter.orElseThrow(()->new NotFoundException("Commuter not found"));
@@ -174,10 +181,11 @@ public class TripServiceImplementation implements TripService {
         Notification savedNotification = notificationRepository.save(notification);
         foundCommuter.getNotifications().add(savedNotification);
 
-
-        OkResponse okResponse = new OkResponse();
-        okResponse.setMessage("successful");
-        return okResponse;
+        RejectRequestNotificationResponse rejectRequestNotificationResponse = new RejectRequestNotificationResponse();
+        rejectRequestNotificationResponse.setFirstName(foundTrip.getDriver().getUser().getBasicInformation().getFirstName());
+        rejectRequestNotificationResponse.setLastName(foundTrip.getDriver().getUser().getBasicInformation().getLastName());
+        rejectRequestNotificationResponse.setUrl(foundTrip.getDriver().getUser().getProfilePicture();
+        return rejectRequestNotificationResponse;
     }
 
     @Override
