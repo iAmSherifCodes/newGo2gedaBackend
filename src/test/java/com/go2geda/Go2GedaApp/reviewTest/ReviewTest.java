@@ -82,7 +82,7 @@ public class ReviewTest {
 
           ReviewRequest reviewRequest = new ReviewRequest();
           reviewRequest.setReview("YEYE DRIVER");
-//          reviewRequest.setId(2L);
+          reviewRequest.setId(2L);
            reviewService.createReview(reviewRequest);
             List<Review>reviewList = reviewService.getReviewOfAUsers(reviewRequest.getReceiverId());
             assertEquals(3,reviewList.size());

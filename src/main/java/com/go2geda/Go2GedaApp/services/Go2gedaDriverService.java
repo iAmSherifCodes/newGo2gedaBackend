@@ -34,14 +34,6 @@ public class Go2gedaDriverService implements  DriverService{
         String firstName = request.getFirstName();
         String lastName = request.getLastName();
         String email = request.getEmail();
-        var foundDriver = driverRepository.findDriverByEmail(email);
-        if (foundDriver.get()==null){
-            try {
-                throw new NotFoundException("User with this email already exist");
-            } catch (NotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
         String password = request.getPassword();
         String phoneNumber = request.getPhoneNumber();
 

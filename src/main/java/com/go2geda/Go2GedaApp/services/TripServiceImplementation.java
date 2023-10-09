@@ -137,7 +137,7 @@ public class TripServiceImplementation implements TripService {
         Notification notification = new Notification();
         notification.setReceiverId(foundCommuter.getId());
         notification.setSenderId(foundTrip.getDriver().getId());
-        notification.setMessage("you request to join "+ foundTrip +" has been accepted");
+        notification.setMessage("you request to join  has been accepted");
         Notification savedNotification = notificationRepository.save(notification);
         foundCommuter.getNotifications().add(savedNotification);
         commuterRepository.save(foundCommuter);

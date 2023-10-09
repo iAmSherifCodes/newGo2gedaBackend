@@ -12,6 +12,7 @@ import com.go2geda.Go2GedaApp.services.CommuterService;
 import com.go2geda.Go2GedaApp.services.DriverService;
 import com.go2geda.Go2GedaApp.services.TripService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +31,9 @@ public class TripServiceTest {
     private final TripService tripService;
     private final DriverService driverService;
     private final CommuterService commuterService;
+    CreateTripRequest createTripRequest;
+    DriverRegisterUserRequest firstDriverUser;
+    CommuterRegisterUserRequest firstCommuterUser;
 
     @Autowired
     public TripServiceTest(TripService tripService, DriverService driverService,CommuterService commuterService) {
@@ -37,19 +41,19 @@ public class TripServiceTest {
         this.driverService = driverService;
         this.commuterService = commuterService;
 
-    }
 
-    @Test
-    public void testThatDriverCanCreateTrip() throws NotFoundException {
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
+    }
+    @BeforeEach
+    public void setUp() throws NotFoundException {
+        firstDriverUser = new DriverRegisterUserRequest();
         firstDriverUser.setEmail("obinaligoodness@gmail.com");
         firstDriverUser.setFirstName("Sherif");
         firstDriverUser.setLastName("Play");
         firstDriverUser.setPhoneNumber("90787878");
         firstDriverUser.setPassword("deyplaypassword");
+        driverService.register(firstDriverUser);
 
-        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-        CreateTripRequest createTripRequest = new CreateTripRequest();
+        createTripRequest = new CreateTripRequest();
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime endTime = LocalDateTime.now().plusHours(1);
         createTripRequest.setFrom("Abulegba");
@@ -59,34 +63,25 @@ public class TripServiceTest {
         createTripRequest.setPickUpTime(localDateTime);
         createTripRequest.setEndTime(endTime);
         createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus("CREATED");
+        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
         createTripRequest.setEmail("obinaligoodness@gmail.com");
+
+        firstCommuterUser = new CommuterRegisterUserRequest();
+        firstCommuterUser.setEmail("woman@gmail.com");
+        firstCommuterUser.setFirstName("woman");
+        firstCommuterUser.setLastName("Playplay");
+        firstCommuterUser.setPhoneNumber("90787878");
+        firstCommuterUser.setPassword("deyplaypassword");
+    }
+
+    @Test
+    public void testThatDriverCanCreateTrip() throws NotFoundException {
         OkResponse response = tripService.createTrip(createTripRequest);
         assertThat(response).isNotNull();
 
     }
     @Test
     public void testThatDriverCanCancelTrip() throws NotFoundException {
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("obinaligoodness@gmail.com");
-        firstDriverUser.setFirstName("Sherif");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
-
-        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-        CreateTripRequest createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        createTripRequest.setFrom("Abulegba");
-        createTripRequest.setTo("Ojuelegba");
-        createTripRequest.setPricePerSeat(1000);
-        createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
-        createTripRequest.setEndTime(endTime);
-        createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus("CREATED");
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
         OkResponse response = tripService.createTrip(createTripRequest);
         var canceledTrip = tripService.cancelTrip(response.getId());
         var foundTrip = tripService.viewTrip(response.getId());
@@ -96,142 +91,35 @@ public class TripServiceTest {
 
     @Test
     public void testThatDriverCanStartTrip() throws NotFoundException {
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("obinaligoodness@gmail.com");
-        firstDriverUser.setFirstName("Sherif");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
-
-        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-        CreateTripRequest createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        createTripRequest.setFrom("Abulegba");
-        createTripRequest.setTo("Ojuelegba");
-        createTripRequest.setPricePerSeat(1000);
-        createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
-        createTripRequest.setEndTime(endTime);
-        createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
-        OkResponse response = tripService.createTrip(createTripRequest);
-
+        var response =tripService.createTrip(createTripRequest);
         var startedTrip = tripService.startTrip(response.getId());
         var foundTrip = tripService.viewTrip(response.getId());
         assertThat(foundTrip.getTripStatus()==TripStatus.STARTED);
     }
     @Test
     public void testThatCommuterCanSearchTripByFrom() throws NotFoundException {
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("obinaligoodness@gmail.com");
-        firstDriverUser.setFirstName("Sherif");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
-
-        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-        CreateTripRequest createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        createTripRequest.setFrom("Abulegba");
-        createTripRequest.setTo("Ojuelegba");
-        createTripRequest.setPricePerSeat(1000);
-        createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
-        createTripRequest.setEndTime(endTime);
-        createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
-        OkResponse response = tripService.createTrip(createTripRequest);
         var searchedTrip = tripService.searchTripByFrom("Abulegba");
         assertThat(searchedTrip).isNotNull();
     }
     @Test
     public void testThatCommuterCanSearchTripByTo() throws NotFoundException {
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("obinaligoodness@gmail.com");
-        firstDriverUser.setFirstName("Sherif");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
-
-        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-        CreateTripRequest createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        createTripRequest.setFrom("Abulegba");
-        createTripRequest.setTo("Ojuelegba");
-        createTripRequest.setPricePerSeat(1000);
-        createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
-        createTripRequest.setEndTime(endTime);
-        createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
         OkResponse response = tripService.createTrip(createTripRequest);
         var searchedTrip = tripService.searchTripByTo("Ojuelegba");
         assertThat(searchedTrip).isNotNull();
     }
     @Test
     public void testThatDriverCanEndTrip() throws NotFoundException {
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("obinaligoodness@gmail.com");
-        firstDriverUser.setFirstName("Sherif");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
-
         RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-        CreateTripRequest createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        createTripRequest.setFrom("Abulegba");
-        createTripRequest.setTo("Ojuelegba");
-        createTripRequest.setPricePerSeat(1000);
-        createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
-        createTripRequest.setEndTime(endTime);
-        createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
         OkResponse response = tripService.createTrip(createTripRequest);
+
         var startedTrip = tripService.endTrip(response.getId());
         var foundTrip = tripService.viewTrip(response.getId());
         assertThat(foundTrip.getTripStatus()==TripStatus.STARTED);
     }
     @Test
     public void testThatCommuterCanBookTrip() throws NotFoundException {
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("obinaligoodness@gmail.com");
-        firstDriverUser.setFirstName("Sherif");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
-
         RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-        CreateTripRequest createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        createTripRequest.setFrom("Abulegba");
-        createTripRequest.setTo("Ojuelegba");
-        createTripRequest.setPricePerSeat(1000);
-        createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
-        createTripRequest.setEndTime(endTime);
-        createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
         OkResponse response = tripService.createTrip(createTripRequest);
-
-        CommuterRegisterUserRequest firstCommuterUser = new CommuterRegisterUserRequest();
-        firstCommuterUser.setEmail("woman@gmail.com");
-        firstCommuterUser.setFirstName("woman");
-        firstCommuterUser.setLastName("Playplay");
-        firstCommuterUser.setPhoneNumber("90787878");
-        firstCommuterUser.setPassword("deyplaypassword");
-
         RegisterUserResponse commuter = commuterService.register(firstCommuterUser);
 
         AcceptAndRejectRequest acceptAndRejectRequest = new AcceptAndRejectRequest();
@@ -244,35 +132,8 @@ public class TripServiceTest {
     }
     @Test
     public void testThatDriverCanAcceptBookRequest() throws NotFoundException {
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("obinaligoodness@gmail.com");
-        firstDriverUser.setFirstName("Sherif");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
-
         RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-        CreateTripRequest createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        createTripRequest.setFrom("Abulegba");
-        createTripRequest.setTo("Ojuelegba");
-        createTripRequest.setPricePerSeat(1000);
-        createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
-        createTripRequest.setEndTime(endTime);
-        createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
         OkResponse response = tripService.createTrip(createTripRequest);
-
-        CommuterRegisterUserRequest firstCommuterUser = new CommuterRegisterUserRequest();
-        firstCommuterUser.setEmail("woman@gmail.com");
-        firstCommuterUser.setFirstName("woman");
-        firstCommuterUser.setLastName("Playplay");
-        firstCommuterUser.setPhoneNumber("90787878");
-        firstCommuterUser.setPassword("deyplaypassword");
-
         RegisterUserResponse commuter = commuterService.register(firstCommuterUser);
 
         AcceptAndRejectRequest acceptAndRejectRequest = new AcceptAndRejectRequest();
@@ -285,35 +146,7 @@ public class TripServiceTest {
 
     @Test
     public void testThatDriverCanRejectBookingRequest() throws NotFoundException {
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("obinaligoodness@gmail.com");
-        firstDriverUser.setFirstName("Sherif");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
-
-        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-        CreateTripRequest createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        createTripRequest.setFrom("Abulegba");
-        createTripRequest.setTo("Ojuelegba");
-        createTripRequest.setPricePerSeat(1000);
-        createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
-        createTripRequest.setEndTime(endTime);
-        createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
         OkResponse response = tripService.createTrip(createTripRequest);
-
-        CommuterRegisterUserRequest firstCommuterUser = new CommuterRegisterUserRequest();
-        firstCommuterUser.setEmail("woman@gmail.com");
-        firstCommuterUser.setFirstName("woman");
-        firstCommuterUser.setLastName("Playplay");
-        firstCommuterUser.setPhoneNumber("90787878");
-        firstCommuterUser.setPassword("deyplaypassword");
-
         RegisterUserResponse commuter = commuterService.register(firstCommuterUser);
 
         AcceptAndRejectRequest acceptAndRejectRequest = new AcceptAndRejectRequest();
@@ -325,34 +158,8 @@ public class TripServiceTest {
     }
     @Test
     public void testThatCommuterCanViewTheirBookedTrips() throws NotFoundException {
-
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("obinaligoodness@gmail.com");
-        firstDriverUser.setFirstName("Sherif");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
-
         RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-        CreateTripRequest createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
-        createTripRequest.setFrom("Abulegba");
-        createTripRequest.setTo("Ojuelegba");
-        createTripRequest.setPricePerSeat(1000);
-        createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
-        createTripRequest.setEndTime(endTime);
-        createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
         OkResponse response = tripService.createTrip(createTripRequest);
-
-        CommuterRegisterUserRequest firstCommuterUser = new CommuterRegisterUserRequest();
-        firstCommuterUser.setEmail("woman@gmail.com");
-        firstCommuterUser.setFirstName("woman");
-        firstCommuterUser.setLastName("Playplay");
-        firstCommuterUser.setPhoneNumber("90787878");
         RegisterUserResponse commuter = commuterService.register(firstCommuterUser);
 
        var bookedTrip =  tripService.viewCommuterBookedTrips(commuter.getId());
