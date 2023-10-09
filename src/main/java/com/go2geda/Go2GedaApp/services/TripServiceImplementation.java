@@ -33,7 +33,7 @@ public class TripServiceImplementation implements TripService {
         List<Trip> availableTrips = new ArrayList<>();
         List<Trip> foundTrips = tripRepository.findTripByPickupAndDestination(from,to);
         boolean hasCreatedTrips = false;
-        for (int i = 0; i < ; i++) {
+        for (int i = 0; i < foundTrips.size(); i++) {
 
         }
 
