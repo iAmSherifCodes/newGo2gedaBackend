@@ -13,7 +13,7 @@ import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import java.util.List;
 
 public interface TripService {
-    List<Trip> searchTripByFromAndTo(SearchTripRequest searchTripRequest) throws NotFoundException;
+    List<Trip> searchTripByFromAndTo(String from, String to) throws NotFoundException;
     List<Trip> searchTripByFrom(String from) throws NotFoundException;
     List<Trip> searchTripByTo(String to) throws NotFoundException;
     OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException;

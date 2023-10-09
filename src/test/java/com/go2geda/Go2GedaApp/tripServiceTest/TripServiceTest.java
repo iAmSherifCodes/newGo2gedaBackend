@@ -54,16 +54,15 @@ public class TripServiceTest {
         driverService.register(firstDriverUser);
 
         createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
+//        LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime endTime = LocalDateTime.now().plusHours(1);
         createTripRequest.setFrom("Abulegba");
         createTripRequest.setTo("Ojuelegba");
         createTripRequest.setPricePerSeat(1000);
         createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
+        createTripRequest.setPickUpTime("12/12/2023, 12:12:30 PM");
         createTripRequest.setEndTime(endTime);
         createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
         createTripRequest.setEmail("obinaligoodness@gmail.com");
 
         firstCommuterUser = new CommuterRegisterUserRequest();

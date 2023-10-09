@@ -122,10 +122,10 @@ public class TripController {
         }
     }
 
-    @PostMapping("/searchTripByFromAndTo")
-    public ResponseEntity<List<Trip>> searchTripByFromAndTo(@RequestBody SearchTripRequest searchTripRequest){
+    @GetMapping("/searchTripBy/from={From}&to={To}")
+    public ResponseEntity<List<Trip>> searchTripByFromAndTo(@PathVariable String From, @PathVariable String To){
         try {
-            return new ResponseEntity<>(tripService.searchTripByFromAndTo(searchTripRequest), HttpStatus.OK);
+            return new ResponseEntity<>(tripService.searchTripByFromAndTo(From, To), HttpStatus.OK);
         } catch (NotFoundException e) {
             throw new RuntimeException(e);
         }

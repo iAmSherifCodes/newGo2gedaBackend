@@ -30,9 +30,9 @@ public class TripServiceImplementation implements TripService {
 
 
     @Override
-    public List<Trip> searchTripByFromAndTo(SearchTripRequest searchTripRequest) throws NotFoundException {
+    public List<Trip> searchTripByFromAndTo(String from, String to) throws NotFoundException {
         List<Trip> availableTrips = new ArrayList<>();
-        List<Trip> foundTrips = tripRepository.findTripByPickupAndDestination(searchTripRequest.getFrom(),searchTripRequest.getTo());
+        List<Trip> foundTrips = tripRepository.findTripByPickupAndDestination(from,to);
         boolean hasCreatedTrips = false;
         for (int i = 0; i < foundTrips.size(); i++) {
             if (foundTrips.get(i).getTripStatus().equals(TripStatus.CREATED)){
