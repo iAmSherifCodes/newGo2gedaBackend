@@ -10,11 +10,10 @@ import java.time.LocalDateTime;
 public class CreateTripRequest {
     private String from;
     private String to;
-    private Integer pricePerSeat;
-    private Integer numberOfSeats;
-    private LocalDateTime pickUpTime;
+    private int pricePerSeat;
+    private int numberOfSeats;
+    private String pickUpTime;
     private LocalDateTime endTime;
     private LocalDateTime startTime;
-    private String TripStatus;
     private String email;
 }

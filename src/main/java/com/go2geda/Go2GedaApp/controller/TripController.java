@@ -36,7 +36,8 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
-    @PostMapping("/searchTrip/{from}")
+
+    @GetMapping("/searchByPickup/{from}")
     public ResponseEntity<List<Trip>> searchTripByFrom(@PathVariable String from){
         try {
             return new ResponseEntity<>(tripService.searchTripByFrom(from),HttpStatus.FOUND);
@@ -44,7 +45,8 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
-    @PostMapping("/searchTrip/{to}")
+
+    @GetMapping("/searchByTo/{to}")
     public ResponseEntity<List<Trip>> searchTripByTo(@PathVariable String to) {
         try {
             return new ResponseEntity<>(tripService.searchTripByTo(to), HttpStatus.FOUND);

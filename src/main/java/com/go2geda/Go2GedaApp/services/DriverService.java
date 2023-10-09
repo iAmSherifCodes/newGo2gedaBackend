@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 
 public interface DriverService {
-
     RegisterUserResponse register(DriverRegisterUserRequest request);
     Driver findDriverByEmail(String email) throws UserNotFound;
     OkResponse verifyAddress(AddressVerificationRequest addressVerificationRequest, String email) throws UserNotFound;

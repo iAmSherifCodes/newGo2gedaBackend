@@ -9,6 +9,8 @@ import com.go2geda.Go2GedaApp.repositories.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,12 +70,21 @@ public class TripServiceImplementation implements TripService {
         trip.setDestination(createTripRequest.getTo());
         trip.setPricePerSeat(createTripRequest.getPricePerSeat());
         trip.setNumberOfSeatsAvailable(createTripRequest.getNumberOfSeats());
-        trip.setPickUpTime(createTripRequest.getPickUpTime());
+
+        String dateString = createTripRequest.getPickUpTime();
+        System.out.println("{DateString}----->>>>>>>>>>>>>"+dateString);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, h:mm:ss a");
+        LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+
+
+        trip.setPickUpTime(localDateTime);
+        System.out.println("{LocalDateTime}----->>>>>>>>>>>>>"+localDateTime);
+
         trip.setEndTime(createTripRequest.getEndTime());
         trip.setStartTime(createTripRequest.getStartTime());
         trip.setTripStatus(TripStatus.CREATED);
         trip.setDriver(foundDriver);
-        trip.setTripStatus(TripStatus.valueOf(createTripRequest.getTripStatus()));
 
 
         Trip savedTrip =tripRepository.save(trip);
