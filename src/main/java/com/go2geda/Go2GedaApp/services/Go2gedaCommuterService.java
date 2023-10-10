@@ -28,6 +28,7 @@ public class Go2gedaCommuterService implements CommuterService{
         String firstName = request.getFirstName();
         String lastName = request.getLastName();
         String email = request.getEmail();
+
         String password = request.getPassword();
         String phoneNumber = request.getPhoneNumber();
 

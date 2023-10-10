@@ -2,8 +2,12 @@ package com.go2geda.Go2GedaApp.services;
 
 import com.go2geda.Go2GedaApp.data.models.*;
 import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
+import com.go2geda.Go2GedaApp.dtos.request.SearchTripRequest;
+import com.go2geda.Go2GedaApp.dtos.response.AcceptRequestNotificationResponse;
+import com.go2geda.Go2GedaApp.dtos.response.BookingNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
+import com.go2geda.Go2GedaApp.dtos.response.RejectRequestNotificationResponse;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.repositories.*;
 import lombok.AllArgsConstructor;
@@ -25,6 +29,23 @@ public class TripServiceImplementation implements TripService {
     private final TripRepository tripRepository;
     private final NotificationRepository notificationRepository;
 
+
+    @Override
+    public List<Trip> searchTripByFromAndTo(String from, String to) throws NotFoundException {
+        List<Trip> availableTrips = new ArrayList<>();
+        List<Trip> foundTrips = tripRepository.findTripByPickupAndDestination(from,to);
+        boolean hasCreatedTrips = false;
+        for (int i = 0; i < foundTrips.size(); i++) {
+            if (foundTrips.get(i).getTripStatus().equals(TripStatus.CREATED)){
+                availableTrips.add(foundTrips.get(i));
+                hasCreatedTrips = true;
+            }
+        }
+        if (!hasCreatedTrips){
+            throw new NotFoundException("No available Trip For the Route");
+        }
+        return availableTrips;
+    }
 
     @Override
     public List<Trip> searchTripByFrom(String from) throws NotFoundException {
@@ -64,9 +85,7 @@ public class TripServiceImplementation implements TripService {
     @Override
     public OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException {
         Trip trip = new Trip();
-        System.out.println(createTripRequest.getEmail());
-        Optional<Driver> driver= driverRepository.findById(createTripRequest.getDriverId());
-//        Optional<Driver> driver= driverRepository.findDriverByEmail(createTripRequest.getEmail());
+        Optional<Driver> driver= driverRepository.findDriverById(createTripRequest.getDriverId());
         Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this email does not exist"));
         trip.setPickup(createTripRequest.getFrom());
         trip.setDestination(createTripRequest.getTo());
@@ -110,7 +129,7 @@ public class TripServiceImplementation implements TripService {
     }
 
     @Override
-    public OkResponse bookTrip(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
+    public BookingNotificationResponse bookTrip(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
 
         Notification  notification = new Notification();
         Optional<Commuter> commuter = commuterRepository.findById(acceptAndRejectRequest.getCommuterId());
@@ -131,13 +150,15 @@ public class TripServiceImplementation implements TripService {
         Driver driver = foundTrip.getDriver();
         driver.getNotificationList().add(savedNotification);
         driverRepository.save(driver);
-        OkResponse okResponse = new OkResponse();
-        okResponse.setMessage("trip booked successfully");
-        return okResponse;
+        BookingNotificationResponse bookingNotificationResponse = new BookingNotificationResponse();
+        bookingNotificationResponse.setFirstName(foundCommuter.getUser().getBasicInformation().getFirstName());
+        bookingNotificationResponse.setLastName(foundCommuter.getUser().getBasicInformation().getLastName());
+        bookingNotificationResponse.setUrl(foundCommuter.getUser().getProfilePicture());
+        return bookingNotificationResponse;
     }
 
     @Override
-    public OkResponse acceptTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
+    public AcceptRequestNotificationResponse acceptTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
 
         Optional<Commuter> commuter = commuterRepository.findById(acceptAndRejectRequest.getCommuterId());
         Commuter foundCommuter = commuter.orElseThrow(()->new NotFoundException("Commuter not found"));
@@ -150,18 +171,20 @@ public class TripServiceImplementation implements TripService {
         Notification notification = new Notification();
         notification.setReceiverId(foundCommuter.getId());
         notification.setSenderId(foundTrip.getDriver().getId());
-        notification.setMessage("you request to join "+ foundTrip +" has been accepted");
+        notification.setMessage("you request to join  has been accepted");
         Notification savedNotification = notificationRepository.save(notification);
         foundCommuter.getNotifications().add(savedNotification);
         commuterRepository.save(foundCommuter);
 
-        OkResponse okResponse = new OkResponse();
-        okResponse.setMessage("successful");
-        return okResponse;
+        AcceptRequestNotificationResponse acceptRequestNotificationResponse = new AcceptRequestNotificationResponse();
+        acceptRequestNotificationResponse.setFirstName(foundTrip.getDriver().getUser().getBasicInformation().getFirstName());
+        acceptRequestNotificationResponse.setLastName(foundTrip.getDriver().getUser().getBasicInformation().getLastName());
+        acceptRequestNotificationResponse.setUrl(foundTrip.getDriver().getUser().getProfilePicture());
+        return acceptRequestNotificationResponse;
     }
 
     @Override
-    public OkResponse rejectTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
+    public RejectRequestNotificationResponse rejectTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {
 
         Optional<Commuter> commuter = commuterRepository.findById(acceptAndRejectRequest.getCommuterId());
         Commuter foundCommuter = commuter.orElseThrow(()->new NotFoundException("Commuter not found"));
@@ -176,10 +199,11 @@ public class TripServiceImplementation implements TripService {
         Notification savedNotification = notificationRepository.save(notification);
         foundCommuter.getNotifications().add(savedNotification);
 
-
-        OkResponse okResponse = new OkResponse();
-        okResponse.setMessage("successful");
-        return okResponse;
+        RejectRequestNotificationResponse rejectRequestNotificationResponse = new RejectRequestNotificationResponse();
+        rejectRequestNotificationResponse.setFirstName(foundTrip.getDriver().getUser().getBasicInformation().getFirstName());
+        rejectRequestNotificationResponse.setLastName(foundTrip.getDriver().getUser().getBasicInformation().getLastName());
+        rejectRequestNotificationResponse.setUrl(foundTrip.getDriver().getUser().getProfilePicture());
+        return rejectRequestNotificationResponse;
     }
 
     @Override
