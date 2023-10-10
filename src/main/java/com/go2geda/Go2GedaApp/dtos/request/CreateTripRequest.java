@@ -15,10 +15,6 @@ public class CreateTripRequest {
     private String pickUpTime;
     private LocalDateTime endTime;
     private LocalDateTime startTime;
-<<<<<<< HEAD
     private String email;
-=======
-//    private String email;
->>>>>>> 4afa4ad3405e4e2362f8c2da2ae57df4150c5a4b
     private Long driverId;
 }

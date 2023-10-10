@@ -84,6 +84,7 @@ public class TripServiceImplementation implements TripService {
     }
     @Override
     public OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException {
+        System.out.println(createTripRequest.getEmail());
         Trip trip = new Trip();
         Optional<Driver> driver= driverRepository.findDriverById(createTripRequest.getDriverId());
         Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this email does not exist"));
@@ -256,5 +257,24 @@ public class TripServiceImplementation implements TripService {
             throw new NotFoundException("No Available Trip For the Route");
         }
         return commuterBookedTrip;
+    }
+
+    @Override
+    public List<Notification> getTripRequests(Long id) {
+        Optional<Driver> driver = driverRepository.findById(id);
+        Driver foundDriver = null;
+        try {
+            foundDriver = driver.orElseThrow(()-> new NotFoundException("Driver with id does not exist"));
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        List<Notification> driversNotification = foundDriver.getNotificationList();
+        List<Notification> request = new ArrayList<>();
+        for (int i = 0; i < driversNotification.size(); i++) {
+            if (driversNotification.get(i).getSenderId()!=id){
+                request.add(driversNotification.get(i));
+            }
+        }
+        return request;
     }
 }
