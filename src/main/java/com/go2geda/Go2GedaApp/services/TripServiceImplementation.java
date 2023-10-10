@@ -9,6 +9,8 @@ import com.go2geda.Go2GedaApp.repositories.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class TripServiceImplementation implements TripService {
 
     private final DriverRepository driverRepository;
+    private final BasicInformationRepository basicInformationRepository;
     private final CommuterRepository commuterRepository;
     private final TripRepository tripRepository;
     private final NotificationRepository notificationRepository;
@@ -58,22 +61,32 @@ public class TripServiceImplementation implements TripService {
 
         return availableTrips;
     }
-
     @Override
     public OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException {
         Trip trip = new Trip();
-        Optional<Driver> driver= driverRepository.findDriverByEmail(createTripRequest.getEmail());
+        System.out.println(createTripRequest.getEmail());
+        Optional<Driver> driver= driverRepository.findById(createTripRequest.getDriverId());
+//        Optional<Driver> driver= driverRepository.findDriverByEmail(createTripRequest.getEmail());
         Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this email does not exist"));
         trip.setPickup(createTripRequest.getFrom());
         trip.setDestination(createTripRequest.getTo());
         trip.setPricePerSeat(createTripRequest.getPricePerSeat());
         trip.setNumberOfSeatsAvailable(createTripRequest.getNumberOfSeats());
-        trip.setPickUpTime(createTripRequest.getPickUpTime());
+
+        String dateString = createTripRequest.getPickUpTime();
+        System.out.println("{DateString}----->>>>>>>>>>>>>"+dateString);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, h:mm:ss a");
+        LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+
+
+        trip.setPickUpTime(localDateTime);
+        System.out.println("{LocalDateTime}----->>>>>>>>>>>>>"+localDateTime);
+
         trip.setEndTime(createTripRequest.getEndTime());
         trip.setStartTime(createTripRequest.getStartTime());
         trip.setTripStatus(TripStatus.CREATED);
         trip.setDriver(foundDriver);
-        trip.setTripStatus(TripStatus.valueOf(createTripRequest.getTripStatus()));
 
 
         Trip savedTrip =tripRepository.save(trip);

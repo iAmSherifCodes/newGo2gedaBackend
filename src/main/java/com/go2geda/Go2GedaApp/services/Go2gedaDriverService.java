@@ -4,13 +4,18 @@ import com.go2geda.Go2GedaApp.data.models.*;
 import com.go2geda.Go2GedaApp.dtos.request.*;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
+import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
+import com.go2geda.Go2GedaApp.exceptions.UserDoesNotExist;
 import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
+import com.go2geda.Go2GedaApp.repositories.BasicInformationRepository;
 import com.go2geda.Go2GedaApp.repositories.DriverRepository;
 import com.go2geda.Go2GedaApp.repositories.TripRepository;
 import com.go2geda.Go2GedaApp.utils.BuildEmailRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.REGISTRATION_SUCCESSFUL;
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.VERIFIED_SUCCESSFUL;
@@ -23,6 +28,7 @@ import static com.go2geda.Go2GedaApp.utils.AppUtils.VERIFICATION_SUCCESSFUL;
 public class Go2gedaDriverService implements  DriverService{
 
     private final DriverRepository driverRepository;
+    private final BasicInformationRepository basicInformationRepository;
     private final CloudService cloudService;
 
     private final BuildEmailRequest buildEmailRequest;
@@ -30,40 +36,42 @@ public class Go2gedaDriverService implements  DriverService{
     private final TripRepository tripRepository;
     @Override
     public RegisterUserResponse register(DriverRegisterUserRequest request) {
-        String firstName = request.getFirstName();
-        String lastName = request.getLastName();
-        String email = request.getEmail();
-        String password = request.getPassword();
-        String phoneNumber = request.getPhoneNumber();
-
-        User newUser = new User();
-        newUser.setRole(Role.DRIVER);
-
-        BasicInformation basicInformation =new BasicInformation();
-
-        basicInformation.setFirstName(firstName);
-        basicInformation.setLastName(lastName);
-        basicInformation.setEmail(email);
-        basicInformation.setPassword(password);
-        basicInformation.setPhoneNumber(phoneNumber);
+            String firstName = request.getFirstName();
+            String lastName = request.getLastName();
+            String email = request.getEmail();
+            String password = request.getPassword();
+            String phoneNumber = request.getPhoneNumber();
 
 
-        newUser.setBasicInformation(basicInformation);
+            User newUser = new User();
+            newUser.setRole(Role.DRIVER);
+
+            BasicInformation basicInformation = new BasicInformation();
+
+            basicInformation.setFirstName(firstName);
+            basicInformation.setLastName(lastName);
+            basicInformation.setEmail(email);
+            basicInformation.setPassword(password);
+            basicInformation.setPhoneNumber(phoneNumber);
 
 
-        Driver newDriver = new Driver();
-        newDriver.setUser(newUser);
+            newUser.setBasicInformation(basicInformation);
 
-        Driver savedDriver = driverRepository.save(newDriver);
 
-        EmailSenderRequest emailSenderRequest = buildEmailRequest.buildEmailRequest(newUser);
-        mailService.send(emailSenderRequest);
+            Driver newDriver = new Driver();
+            newDriver.setUser(newUser);
 
-        RegisterUserResponse response = new RegisterUserResponse();
-        response.setMessage(REGISTRATION_SUCCESSFUL.name());
-        response.setId(savedDriver.getId());
-        return response;
-    }
+            Driver savedDriver = driverRepository.save(newDriver);
+
+            EmailSenderRequest emailSenderRequest = buildEmailRequest.buildEmailRequest(newUser);
+            mailService.send(emailSenderRequest);
+            RegisterUserResponse response = new RegisterUserResponse();
+            response.setMessage(REGISTRATION_SUCCESSFUL.name());
+            response.setId(savedDriver.getId());
+            response.setEmail(savedDriver.getUser().getBasicInformation().getEmail());
+            return response;
+        }
+
 
     @Override
     public Driver findDriverByEmail(String email) throws UserNotFound {
@@ -98,7 +106,6 @@ public class Go2gedaDriverService implements  DriverService{
         Driver foundDriver = findDriverByEmail(email);
 
         DriverInformation driverInformation = new DriverInformation();
-
         AccountDetails accountDetails = new AccountDetails();
         accountDetails.setAccountNUmber(accountDetailsVerificationRequest.getAccountNUmber());
         accountDetails.setBankName(accountDetailsVerificationRequest.getBankName());

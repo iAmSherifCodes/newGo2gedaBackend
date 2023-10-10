@@ -142,7 +142,7 @@ public class DriverServiceTest {
     @Test
     void verifyDriverAddress(){
         DriverRegisterUserRequest registerUserRequest = new DriverRegisterUserRequest();
-        registerUserRequest.setEmail("dejalltime@gmail.com");
+        registerUserRequest.setEmail("dejalltime22@gmail.com");
         registerUserRequest.setFirstName("Dej");
         registerUserRequest.setLastName("Martins");
         registerUserRequest.setPhoneNumber("90787878");
@@ -161,7 +161,7 @@ public class DriverServiceTest {
 
         OkResponse response = null;
         try {
-            response = driverService.verifyAddress(request,  "dejalltime@gmail.com");
+            response = driverService.verifyAddress(request,  "dejalltime22@gmail.com");
         } catch (UserNotFound e) {
             throw new RuntimeException(e);
         }

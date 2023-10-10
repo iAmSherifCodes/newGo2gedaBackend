@@ -25,7 +25,6 @@ public class AppUtils {
     private static final String MAIL_TEMPLATE_LOCATION_COMMUTER = "C:\\Users\\USER\\IdeaProjects\\SpringProjects\\newGo2gedaBackend2\\src\\main\\resources\\templates\\commuterEmail.html";
 
 
-
     public static String getMailTemplate() {
         Path templateLocation = Paths.get(MAIL_TEMPLATE_LOCATION);
         try {
