@@ -86,7 +86,7 @@ public class TripServiceTest {
         OkResponse createTripResponse = tripService.createTrip(createTripRequest);
         assertNotNull(createTripResponse);
 
-        Set<Trip> foundTrips = tripService.driverTripHistory(driverId);
+        List<Trip> foundTrips = tripService.driverTripHistory(driverId);
         assertThat(foundTrips.size()).isGreaterThan(0);
 
     }
