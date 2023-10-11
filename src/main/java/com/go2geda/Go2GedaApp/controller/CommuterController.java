@@ -22,7 +22,6 @@ public class CommuterController {
     private final CommuterService commuterService;
     private final DriverService driverService;
 //    private final  userService;
-
     @PostMapping("/register-commuter")
     public ResponseEntity<RegisterUserResponse> registerCommuter(@RequestBody  CommuterRegisterUserRequest request){
         return new ResponseEntity<>(commuterService.register(request), HttpStatus.OK);
