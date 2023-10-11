@@ -29,6 +29,7 @@ public class TripController {
     @PostMapping("/createTrip")
     public ResponseEntity<OkResponse> createATrip(@RequestBody  CreateTripRequest createTripRequest) {
         try {
+            System.out.println(createTripRequest.getEmail());
             return new ResponseEntity<>(tripService.createTrip(createTripRequest), HttpStatus.OK);
         } catch (NotFoundException e) {
             throw new RuntimeException(e);
@@ -48,7 +49,7 @@ public class TripController {
         try {
             return new ResponseEntity<>(tripService.searchTripByFrom(from),HttpStatus.FOUND);
         } catch (NotFoundException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -87,7 +88,6 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
-
     @GetMapping("/viewBookedTrip/{tripId}")
     public ResponseEntity<List<Trip>> viewCommuterBookedTrip(@PathVariable Long tripId) {
         try {
@@ -96,7 +96,6 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
-
     @PostMapping("/acceptTrip")
     public ResponseEntity<AcceptRequestNotificationResponse> acceptTripRequest(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
         try {
@@ -123,10 +122,10 @@ public class TripController {
         }
     }
 
-    @PostMapping("/searchTripByFromAndTo")
-    public ResponseEntity<List<Trip>> searchTripByFromAndTo(@RequestBody SearchTripRequest searchTripRequest){
+    @GetMapping("/searchTripBy/from={From}&to={To}")
+    public ResponseEntity<List<Trip>> searchTripByFromAndTo(@PathVariable String From, @PathVariable String To){
         try {
-            return new ResponseEntity<>(tripService.searchTripByFromAndTo(searchTripRequest), HttpStatus.OK);
+            return new ResponseEntity<>(tripService.searchTripByFromAndTo(From, To), HttpStatus.OK);
         } catch (NotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -140,4 +139,31 @@ public class TripController {
         return new ResponseEntity<>(tripService.getTripRequests(id),HttpStatus.OK);
     }
 
+<<<<<<< HEAD
+    @GetMapping("/trip-requests/{id}")
+    public ResponseEntity<List<Notification>> getTripRequest(@PathVariable Long id){
+        return new ResponseEntity<>(tripService.getTripRequests(id),HttpStatus.OK);
+    }
+
+=======
+    @GetMapping("/viewDriverTrips/{driverId}")
+    public ResponseEntity<List<Trip>> driverTrips(@PathVariable Long driverId){
+        try {
+            return new ResponseEntity<>(tripService.driverTripHistory(driverId), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/viewCommuterTrips/{commuterId}")
+    public ResponseEntity<List<Trip>> commuterTrips(@PathVariable Long commuterId){
+        try {
+            return new ResponseEntity<>(tripService.commuterTripHistory(commuterId), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+>>>>>>> f40c0b7c40125bb3f9a0d0e49f6e390003b72b41
 }

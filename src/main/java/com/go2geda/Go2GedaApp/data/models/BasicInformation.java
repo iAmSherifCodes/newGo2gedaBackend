@@ -18,4 +18,6 @@ public class BasicInformation {
     private String  email;
     private String phoneNumber;
     private String password;
+
+
 }

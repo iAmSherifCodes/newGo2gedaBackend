@@ -1,5 +1,6 @@
 package com.go2geda.Go2GedaApp.tripServiceTest;
 
+import com.go2geda.Go2GedaApp.data.models.Trip;
 import com.go2geda.Go2GedaApp.data.models.TripStatus;
 import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
 import com.go2geda.Go2GedaApp.dtos.request.CommuterRegisterUserRequest;
@@ -8,6 +9,8 @@ import com.go2geda.Go2GedaApp.dtos.request.DriverRegisterUserRequest;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
+import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
+import com.go2geda.Go2GedaApp.repositories.TripRepository;
 import com.go2geda.Go2GedaApp.services.CommuterService;
 import com.go2geda.Go2GedaApp.services.DriverService;
 import com.go2geda.Go2GedaApp.services.TripService;
@@ -16,13 +19,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 //@ActiveProfiles("dev")
@@ -30,15 +33,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class TripServiceTest {
     private final TripService tripService;
     private final DriverService driverService;
+    private final TripRepository tripRepository;
     private final CommuterService commuterService;
     CreateTripRequest createTripRequest;
     DriverRegisterUserRequest firstDriverUser;
     CommuterRegisterUserRequest firstCommuterUser;
 
     @Autowired
-    public TripServiceTest(TripService tripService, DriverService driverService,CommuterService commuterService) {
+    public TripServiceTest(TripService tripService, DriverService driverService, TripRepository tripRepository, CommuterService commuterService) {
         this.tripService = tripService;
         this.driverService = driverService;
+        this.tripRepository = tripRepository;
         this.commuterService = commuterService;
 
 
@@ -46,25 +51,23 @@ public class TripServiceTest {
     @BeforeEach
     public void setUp() throws NotFoundException {
         firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("obinaligoodness@gmail.com");
+        firstDriverUser.setEmail("obinaligoodnss@gmail.com");
         firstDriverUser.setFirstName("Sherif");
         firstDriverUser.setLastName("Play");
         firstDriverUser.setPhoneNumber("90787878");
         firstDriverUser.setPassword("deyplaypassword");
-        driverService.register(firstDriverUser);
+
 
         createTripRequest = new CreateTripRequest();
-        LocalDateTime localDateTime = LocalDateTime.now();
+//        LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime endTime = LocalDateTime.now().plusHours(1);
         createTripRequest.setFrom("Abulegba");
         createTripRequest.setTo("Ojuelegba");
         createTripRequest.setPricePerSeat(1000);
         createTripRequest.setNumberOfSeats(3);
-        createTripRequest.setPickUpTime(localDateTime);
-        createTripRequest.setEndTime(endTime);
-        createTripRequest.setStartTime(endTime);
-        createTripRequest.setTripStatus(TripStatus.CREATED.toString());
-        createTripRequest.setEmail("obinaligoodness@gmail.com");
+        createTripRequest.setPickUpTime("12/12/2023, 12:12:30 PM");
+//        createTripRequest.setEndTime(endTime);
+//        createTripRequest.setStartTime(endTime);
 
         firstCommuterUser = new CommuterRegisterUserRequest();
         firstCommuterUser.setEmail("woman@gmail.com");
@@ -72,6 +75,20 @@ public class TripServiceTest {
         firstCommuterUser.setLastName("Playplay");
         firstCommuterUser.setPhoneNumber("90787878");
         firstCommuterUser.setPassword("deyplaypassword");
+    }
+
+    @Test
+    void testDriverTripHistory() throws NotFoundException, UserNotFound {
+        RegisterUserResponse registerUserResponse = driverService.register(firstDriverUser);
+        Long driverId = registerUserResponse.getId();
+
+        createTripRequest.setDriverId(driverId);
+        OkResponse createTripResponse = tripService.createTrip(createTripRequest);
+        assertNotNull(createTripResponse);
+
+        List<Trip> foundTrips = tripService.driverTripHistory(driverId);
+        assertThat(foundTrips.size()).isGreaterThan(0);
+
     }
 
     @Test
@@ -114,7 +131,7 @@ public class TripServiceTest {
 
         var startedTrip = tripService.endTrip(response.getId());
         var foundTrip = tripService.viewTrip(response.getId());
-        assertThat(foundTrip.getTripStatus()==TripStatus.STARTED);
+        assertSame(foundTrip.getTripStatus(), TripStatus.STARTED);
     }
     @Test
     public void testThatCommuterCanBookTrip() throws NotFoundException {
@@ -165,5 +182,12 @@ public class TripServiceTest {
        var bookedTrip =  tripService.viewCommuterBookedTrips(commuter.getId());
         System.out.println(bookedTrip.get(0));
        assertEquals(0,bookedTrip.size());
+    }
+
+    @Test
+    void testFindByStatusQuery(){
+        List<Trip> foundTrips = tripRepository.findByTripStatus();
+        System.out.println(foundTrips);
+
     }
 }

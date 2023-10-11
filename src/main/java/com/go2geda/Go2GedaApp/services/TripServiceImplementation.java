@@ -9,30 +9,34 @@ import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RejectRequestNotificationResponse;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
+import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
 import com.go2geda.Go2GedaApp.repositories.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static com.go2geda.Go2GedaApp.data.models.TripStatus.CANCELED;
+import static com.go2geda.Go2GedaApp.data.models.TripStatus.COMPLETED;
+import static com.go2geda.Go2GedaApp.exceptions.ExceptionMessage.USER_NOT_FOUND;
 
 @Service
 @AllArgsConstructor
 public class TripServiceImplementation implements TripService {
 
     private final DriverRepository driverRepository;
+    private final BasicInformationRepository basicInformationRepository;
     private final CommuterRepository commuterRepository;
     private final TripRepository tripRepository;
     private final NotificationRepository notificationRepository;
 
 
     @Override
-    public List<Trip> searchTripByFromAndTo(SearchTripRequest searchTripRequest) throws NotFoundException {
+    public List<Trip> searchTripByFromAndTo(String from, String to) throws NotFoundException {
         List<Trip> availableTrips = new ArrayList<>();
-        List<Trip> foundTrips = tripRepository.findTripByPickupAndDestination(searchTripRequest.getFrom(),searchTripRequest.getTo());
+        List<Trip> foundTrips = tripRepository.findTripByPickupAndDestination(from,to);
         boolean hasCreatedTrips = false;
         for (int i = 0; i < foundTrips.size(); i++) {
             if (foundTrips.get(i).getTripStatus().equals(TripStatus.CREATED)){
@@ -63,6 +67,38 @@ public class TripServiceImplementation implements TripService {
         return availableTrips;
     }
 
+    @Override
+    public List<Trip> driverTripHistory(Long driverId) throws NotFoundException {
+        Driver foundDriver = driverRepository.findDriverById(driverId).orElseThrow(()->new NotFoundException(USER_NOT_FOUND.name()));
+        List<Trip> allTrips = tripRepository.findByDriver_Id(foundDriver.getId());
+        List<Trip> foundTrips = new ArrayList<>();
+        for (Trip found : allTrips){
+            if (found.getTripStatus().equals(COMPLETED) || found.getTripStatus().equals(CANCELED)){
+                foundTrips.add(found);
+            }
+        }
+        return foundTrips;
+    }
+
+    @Override
+    public List<Trip> commuterTripHistory(Long commuterId) throws NotFoundException {
+        Commuter foundCommuter = commuterRepository.findById(commuterId).orElseThrow(()-> new NotFoundException(USER_NOT_FOUND.name()));
+        List<Trip> trips = tripRepository.findAll();
+        List<Trip> commuterList = new ArrayList<>();
+
+        for (Trip trip: trips) {
+            if (trip.getTripStatus().equals(COMPLETED) || trip.getTripStatus().equals(CANCELED)){
+                List<Commuter> commutersInTrip = trip.getCommuter();
+                for(Commuter commuter: commutersInTrip){
+                    if (commuter.getId().equals(foundCommuter.getId())){
+                        commuterList.add(trip);
+                    }
+                }
+            }
+        }
+        return commuterList;
+    }
+
 
     @Override
     public List<Trip> searchTripByTo(String to) throws NotFoundException {
@@ -81,12 +117,13 @@ public class TripServiceImplementation implements TripService {
 
         return availableTrips;
     }
-
     @Override
     public OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException {
+        System.out.println(createTripRequest.getEmail());
         Trip trip = new Trip();
-        Optional<Driver> driver= driverRepository.findById(createTripRequest.getId());
-        Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this id does not exist"));
+
+        Optional<Driver> driver= driverRepository.findDriverById(createTripRequest.getDriverId());
+        Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this email does not exist"));
         trip.setPickup(createTripRequest.getFrom());
         trip.setDestination(createTripRequest.getTo());
         trip.setPricePerSeat(createTripRequest.getPricePerSeat());
@@ -121,7 +158,7 @@ public class TripServiceImplementation implements TripService {
     public OkResponse cancelTrip(long tripId) throws NotFoundException {
         Optional<Trip> trip = tripRepository.findById(tripId);
         Trip foundTrip = trip.orElseThrow(()->new NotFoundException("Trip not found"));
-        foundTrip.setTripStatus(TripStatus.CANCELED);
+        foundTrip.setTripStatus(CANCELED);
         tripRepository.save(foundTrip);
         OkResponse okResponse = new OkResponse();
         okResponse.setMessage("Trip canceled Successfully");
@@ -225,7 +262,7 @@ public class TripServiceImplementation implements TripService {
     public OkResponse endTrip(Long tripId) throws NotFoundException {
         Optional<Trip> trip = tripRepository.findById(tripId);
         Trip foundTrip = trip.orElseThrow(()->new NotFoundException("Trip not found"));
-        foundTrip.setTripStatus(TripStatus.COMPLETED);
+        foundTrip.setTripStatus(COMPLETED);
         tripRepository.save(foundTrip);
 
         OkResponse okResponse = new OkResponse();

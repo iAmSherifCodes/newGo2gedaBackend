@@ -20,9 +20,7 @@ import java.util.List;
 @CrossOrigin("*")
 public class ReviewController {
     private final ReviewService review;
-
-
-    @PostMapping("/register")
+    @PostMapping("/create")
     public ResponseEntity<BaseResponse> createReview(@RequestBody ReviewRequest reviewRequest){
         Review response = review.createReview(reviewRequest);
         return new ResponseEntity<>(
