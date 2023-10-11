@@ -24,20 +24,22 @@ public class Go2GedaReviewService implements ReviewService{
 public Review createReview(ReviewRequest reviewRequest) {
     Optional<User> sender = userRepository.findById(reviewRequest.getSenderId());
     Optional<User> receiver = userRepository.findById(reviewRequest.getReceiverId());
+    String firstName = sender.get().getBasicInformation().getFirstName();
+    String lastName = sender.get().getBasicInformation().getLastName();
 
     if (sender.isEmpty() || receiver.isEmpty()) {
-        // One or both of the users don't exist
         throw new UserDoesNotExist( "User Cannot be found");
-    } else {
+    }
         Review review = new Review();
         review.setReview(reviewRequest.getReview());
         review.setSenderId(reviewRequest.getSenderId());
         review.setReceiverId(reviewRequest.getReceiverId());
+        review.setSenderLastName(firstName);
+        review.setSenderLastName(lastName);
         Review savedReview = reviewRepository.save(review);
         receiver.get().getReviews().add(savedReview);
         userRepository.save(receiver.get());
-        return reviewRepository.save(review);
-    }
+        return savedReview;
 }
     @Override
     public List<Review> getReviewOfAUsers(Long receiverId) {

@@ -19,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 public class DriverController {
     private final DriverService driverService;
-
     @PostMapping("/registerDriver")
     public ResponseEntity<RegisterUserResponse> register(@RequestBody DriverRegisterUserRequest registerUserRequest) {
         return new ResponseEntity<>(driverService.register(registerUserRequest), HttpStatus.OK);

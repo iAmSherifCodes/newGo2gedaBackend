@@ -4,19 +4,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
+@Data
 @Entity
-public class Review {
+public class VirtualAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long senderId;
-    private Long receiverId;
-    private String senderFirstName;
-    private String senderLastName;
-    private String review;
+    private Long userId;
+    private String accountNUmber;
+    private String accountName;
+    private String bank;
+    private boolean active;
+    private String createdAt;
+    private String updatedAt;
 }

@@ -1,5 +1,6 @@
 package com.go2geda.Go2GedaApp.services;
 
+import com.go2geda.Go2GedaApp.data.models.Notification;
 import com.go2geda.Go2GedaApp.data.models.Trip;
 import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
 import com.go2geda.Go2GedaApp.dtos.response.AcceptRequestNotificationResponse;
@@ -28,4 +29,6 @@ public interface TripService {
     OkResponse endTrip(Long tripId) throws NotFoundException;
     Trip viewTrip (Long tripId) throws NotFoundException;
     List<Trip> viewCommuterBookedTrips(Long commuterId) throws NotFoundException;
+    List <Trip> getDriversTrips(Long id);
+    List<Notification> getTripRequests (Long id);
 }

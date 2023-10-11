@@ -1,6 +1,7 @@
 package com.go2geda.Go2GedaApp.controller;
 
 
+import com.go2geda.Go2GedaApp.data.models.Notification;
 import com.go2geda.Go2GedaApp.data.models.Trip;
 import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
@@ -28,6 +29,7 @@ public class TripController {
     @PostMapping("/createTrip")
     public ResponseEntity<OkResponse> createATrip(@RequestBody  CreateTripRequest createTripRequest) {
         try {
+            System.out.println(createTripRequest.getEmail());
             return new ResponseEntity<>(tripService.createTrip(createTripRequest), HttpStatus.OK);
         } catch (NotFoundException e) {
             throw new RuntimeException(e);
@@ -47,7 +49,7 @@ public class TripController {
         try {
             return new ResponseEntity<>(tripService.searchTripByFrom(from),HttpStatus.FOUND);
         } catch (NotFoundException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -86,7 +88,6 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
-
     @GetMapping("/viewBookedTrip/{tripId}")
     public ResponseEntity<List<Trip>> viewCommuterBookedTrip(@PathVariable Long tripId) {
         try {
@@ -95,7 +96,6 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
-
     @PostMapping("/acceptTrip")
     public ResponseEntity<AcceptRequestNotificationResponse> acceptTripRequest(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
         try {
@@ -130,7 +130,22 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
+    @GetMapping("/driver-Trip/{id}")
+    public ResponseEntity<List<Trip>> getDriversTrip(@PathVariable Long id){
+        return new ResponseEntity<>(tripService.getDriversTrips(id),HttpStatus.OK);
+    }
+    @GetMapping("/trip-requests/{id}")
+    public ResponseEntity<List<Notification>> getTripRequest(@PathVariable Long id){
+        return new ResponseEntity<>(tripService.getTripRequests(id),HttpStatus.OK);
+    }
 
+<<<<<<< HEAD
+    @GetMapping("/trip-requests/{id}")
+    public ResponseEntity<List<Notification>> getTripRequest(@PathVariable Long id){
+        return new ResponseEntity<>(tripService.getTripRequests(id),HttpStatus.OK);
+    }
+
+=======
     @GetMapping("/viewDriverTrips/{driverId}")
     public ResponseEntity<List<Trip>> driverTrips(@PathVariable Long driverId){
         try {
@@ -150,4 +165,5 @@ public class TripController {
     }
 
 
+>>>>>>> f40c0b7c40125bb3f9a0d0e49f6e390003b72b41
 }
