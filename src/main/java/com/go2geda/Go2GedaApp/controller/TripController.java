@@ -131,4 +131,23 @@ public class TripController {
         }
     }
 
+    @GetMapping("/viewDriverTrips/{driverId}")
+    public ResponseEntity<List<Trip>> driverTrips(@PathVariable Long driverId){
+        try {
+            return new ResponseEntity<>(tripService.driverTripHistory(driverId), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/viewCommuterTrips/{commuterId}")
+    public ResponseEntity<List<Trip>> commuterTrips(@PathVariable Long commuterId){
+        try {
+            return new ResponseEntity<>(tripService.commuterTripHistory(commuterId), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }
