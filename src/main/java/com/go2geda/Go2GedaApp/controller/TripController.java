@@ -1,6 +1,7 @@
 package com.go2geda.Go2GedaApp.controller;
 
 
+import com.go2geda.Go2GedaApp.data.models.Notification;
 import com.go2geda.Go2GedaApp.data.models.Trip;
 import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
@@ -129,6 +130,14 @@ public class TripController {
         } catch (NotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+    @GetMapping("/driver-Trip/{id}")
+    public ResponseEntity<List<Trip>> getDriversTrip(@PathVariable Long id){
+        return new ResponseEntity<>(tripService.getDriversTrips(id),HttpStatus.OK);
+    }
+    @GetMapping("/trip-requests/{id}")
+    public ResponseEntity<List<Notification>> getTripRequest(@PathVariable Long id){
+        return new ResponseEntity<>(tripService.getTripRequests(id),HttpStatus.OK);
     }
 
 }

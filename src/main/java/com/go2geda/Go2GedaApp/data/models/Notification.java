@@ -16,8 +16,11 @@ public class Notification {
     @Id
     @GeneratedValue
     private Long id;
+    private Long TripId;
     private Long senderId;
     private Long receiverId;
+    private String senderFirstName;
+    private String senderLastName;
     @Column(length = 255)
     private String message;
 }

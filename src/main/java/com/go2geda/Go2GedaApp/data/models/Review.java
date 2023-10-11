@@ -16,5 +16,7 @@ public class Review {
     private Long id;
     private Long senderId;
     private Long receiverId;
+    private String senderFirstName;
+    private String senderLastName;
     private String review;
 }

@@ -85,8 +85,8 @@ public class TripServiceImplementation implements TripService {
     @Override
     public OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException {
         Trip trip = new Trip();
-        Optional<Driver> driver= driverRepository.findDriverByEmail(createTripRequest.getEmail());
-        Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this email does not exist"));
+        Optional<Driver> driver= driverRepository.findById(createTripRequest.getId());
+        Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this id does not exist"));
         trip.setPickup(createTripRequest.getFrom());
         trip.setDestination(createTripRequest.getTo());
         trip.setPricePerSeat(createTripRequest.getPricePerSeat());
@@ -137,6 +137,8 @@ public class TripServiceImplementation implements TripService {
         Trip foundTrip = viewTrip(acceptAndRejectRequest.getTripId());
         notification.setSenderId(acceptAndRejectRequest.getCommuterId());
         notification.setReceiverId(foundTrip.getDriver().getId());
+        notification.setSenderFirstName(foundCommuter.getUser().getBasicInformation().getFirstName());
+        notification.setSenderLastName(foundCommuter.getUser().getBasicInformation().getLastName());
         notification.setMessage(foundCommuter
                 .getUser()
                 .getBasicInformation()
@@ -145,7 +147,7 @@ public class TripServiceImplementation implements TripService {
                 + foundCommuter
                 .getUser()
                 .getBasicInformation()
-                .getLastName() + "requested to join trip");
+                .getLastName() + " requested to join trip");
         Notification savedNotification = notificationRepository.save(notification);
         Driver driver = foundTrip.getDriver();
         driver.getNotificationList().add(savedNotification);
@@ -172,6 +174,7 @@ public class TripServiceImplementation implements TripService {
         notification.setReceiverId(foundCommuter.getId());
         notification.setSenderId(foundTrip.getDriver().getId());
         notification.setMessage("you request to join  has been accepted");
+        notification.setTripId(foundTrip.getId());
         Notification savedNotification = notificationRepository.save(notification);
         foundCommuter.getNotifications().add(savedNotification);
         commuterRepository.save(foundCommuter);
@@ -256,5 +259,36 @@ public class TripServiceImplementation implements TripService {
             throw new NotFoundException("No Available Trip For the Route");
         }
         return commuterBookedTrip;
+    }
+
+    @Override
+    public List<Trip> getDriversTrips(Long id) {
+        List <Trip> allTrips = tripRepository.findAll();
+        List<Trip> driverTrip = new ArrayList<>();
+        for (int i = 0; i < allTrips.size(); i++) {
+            if (allTrips.get(i).getDriver().getId().equals(id)){
+                driverTrip.add(allTrips.get(i));
+            }
+        }
+        return driverTrip;
+    }
+
+    @Override
+    public List<Notification> getTripRequests(Long id) {
+        Optional<Driver> driver = driverRepository.findById(id);
+        Driver foundDriver = null;
+        try {
+            foundDriver = driver.orElseThrow(()-> new NotFoundException("Driver with id does not exist"));
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        List<Notification> driversNotification = foundDriver.getNotificationList();
+        List<Notification> request = new ArrayList<>();
+        for (int i = 0; i < driversNotification.size(); i++) {
+            if (driversNotification.get(i).getSenderId()!=id){
+                request.add(driversNotification.get(i));
+            }
+        }
+        return request;
     }
 }
