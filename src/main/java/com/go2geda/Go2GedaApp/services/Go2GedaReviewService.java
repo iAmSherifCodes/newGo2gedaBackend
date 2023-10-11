@@ -26,7 +26,6 @@ public Review createReview(ReviewRequest reviewRequest) {
     Optional<User> receiver = userRepository.findById(reviewRequest.getReceiverId());
 
     if (sender.isEmpty() || receiver.isEmpty()) {
-        // One or both of the users don't exist
         throw new UserDoesNotExist( "User Cannot be found");
     } else {
         Review review = new Review();
