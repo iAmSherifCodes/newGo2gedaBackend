@@ -5,7 +5,6 @@ import com.go2geda.Go2GedaApp.data.models.Notification;
 import com.go2geda.Go2GedaApp.data.models.Trip;
 import com.go2geda.Go2GedaApp.dtos.request.AcceptAndRejectRequest;
 import com.go2geda.Go2GedaApp.dtos.request.CreateTripRequest;
-import com.go2geda.Go2GedaApp.dtos.request.SearchTripRequest;
 import com.go2geda.Go2GedaApp.dtos.response.AcceptRequestNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.response.BookingNotificationResponse;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
@@ -13,7 +12,6 @@ import com.go2geda.Go2GedaApp.dtos.response.RejectRequestNotificationResponse;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.services.TripService;
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +27,6 @@ public class TripController {
     @PostMapping("/createTrip")
     public ResponseEntity<OkResponse> createATrip(@RequestBody  CreateTripRequest createTripRequest) {
         try {
-            System.out.println(createTripRequest.getEmail());
             return new ResponseEntity<>(tripService.createTrip(createTripRequest), HttpStatus.OK);
         } catch (NotFoundException e) {
             throw new RuntimeException(e);
@@ -88,10 +85,10 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
-    @GetMapping("/viewBookedTrip/{tripId}")
-    public ResponseEntity<List<Trip>> viewCommuterBookedTrip(@PathVariable Long tripId) {
+    @GetMapping("/viewBookedTrip/{commuterId}")
+    public ResponseEntity<List<Trip>> viewCommuterBookedTrip(@PathVariable Long commuterId) {
         try {
-            return new ResponseEntity<>(tripService.viewCommuterBookedTrips(tripId), HttpStatus.OK);
+            return new ResponseEntity<>(tripService.viewCommuterBookedTrips(commuterId), HttpStatus.OK);
         } catch (NotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -134,11 +131,11 @@ public class TripController {
     public ResponseEntity<List<Trip>> getDriversTrip(@PathVariable Long id){
         return new ResponseEntity<>(tripService.getDriversTrips(id),HttpStatus.OK);
     }
+
     @GetMapping("/trip-requests/{id}")
     public ResponseEntity<List<Notification>> getTripRequest(@PathVariable Long id){
         return new ResponseEntity<>(tripService.getTripRequests(id),HttpStatus.OK);
     }
-
 
     @GetMapping("/viewDriverTrips/{driverId}")
     public ResponseEntity<List<Trip>> driverTrips(@PathVariable Long driverId){
@@ -157,6 +154,4 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
-
-
 }
