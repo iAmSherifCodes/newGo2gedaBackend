@@ -138,14 +138,7 @@ public class TripController {
     public ResponseEntity<List<Notification>> getTripRequest(@PathVariable Long id){
         return new ResponseEntity<>(tripService.getTripRequests(id),HttpStatus.OK);
     }
-
-<<<<<<< HEAD
-    @GetMapping("/trip-requests/{id}")
-    public ResponseEntity<List<Notification>> getTripRequest(@PathVariable Long id){
-        return new ResponseEntity<>(tripService.getTripRequests(id),HttpStatus.OK);
-    }
-
-=======
+    
     @GetMapping("/viewDriverTrips/{driverId}")
     public ResponseEntity<List<Trip>> driverTrips(@PathVariable Long driverId){
         try {
@@ -165,5 +158,5 @@ public class TripController {
     }
 
 
->>>>>>> f40c0b7c40125bb3f9a0d0e49f6e390003b72b41
+
 }
