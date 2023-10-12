@@ -13,9 +13,9 @@ public interface DriverRepository extends JpaRepository<Driver,Long> {
             """)
     Optional<Driver> findDriverByEmail(String email);
 
-    @Query(value = """
-            select d from Driver d
-            where d.user.id = :id
-            """)
+//    @Query(value = """
+//            select d from Driver d
+//            where d.d.id = :id
+//            """)
     Optional<Driver> findDriverById(Long id);
 }

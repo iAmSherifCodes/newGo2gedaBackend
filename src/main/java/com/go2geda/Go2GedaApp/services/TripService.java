@@ -17,7 +17,7 @@ import java.util.Set;
 public interface TripService {
     List<Trip> searchTripByFromAndTo(String from, String to) throws NotFoundException;
     List<Trip> searchTripByFrom(String from) throws NotFoundException;
-    List<Trip> driverTripHistory(Long driverId) throws NotFoundException;g
+    List<Trip> driverTripHistory(Long driverId) throws NotFoundException;
     List<Trip> commuterTripHistory(Long commuterId) throws NotFoundException;
     List<Trip> searchTripByTo(String to) throws NotFoundException;
     OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException;

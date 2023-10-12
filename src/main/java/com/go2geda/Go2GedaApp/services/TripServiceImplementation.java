@@ -119,25 +119,22 @@ public class TripServiceImplementation implements TripService {
     }
     @Override
     public OkResponse createTrip(CreateTripRequest createTripRequest) throws NotFoundException {
-        System.out.println(createTripRequest.getEmail());
         Trip trip = new Trip();
 
         Optional<Driver> driver= driverRepository.findDriverById(createTripRequest.getDriverId());
-        Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this email does not exist"));
+        Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this id does not exist"));
         trip.setPickup(createTripRequest.getFrom());
         trip.setDestination(createTripRequest.getTo());
         trip.setPricePerSeat(createTripRequest.getPricePerSeat());
         trip.setNumberOfSeatsAvailable(createTripRequest.getNumberOfSeats());
 
         String dateString = createTripRequest.getPickUpTime();
-        System.out.println("{DateString}----->>>>>>>>>>>>>"+dateString);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, h:mm:ss a");
         LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
 
 
         trip.setPickUpTime(localDateTime);
-        System.out.println("{LocalDateTime}----->>>>>>>>>>>>>"+localDateTime);
 
         trip.setEndTime(createTripRequest.getEndTime());
         trip.setStartTime(createTripRequest.getStartTime());

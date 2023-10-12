@@ -10,4 +10,6 @@ public interface BasicInformationRepository extends JpaRepository<BasicInformati
     boolean existsByEmail(String email);
 
     Optional<User> findByEmail(String email);
+
+    Optional<BasicInformation> findBasicInformationByEmailAndPassword(String email, String password);
 }
