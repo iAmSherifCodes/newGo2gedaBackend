@@ -6,26 +6,32 @@ import com.go2geda.Go2GedaApp.dtos.request.CommuterRegisterUserRequest;
 import com.go2geda.Go2GedaApp.dtos.request.EmailSenderRequest;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
+import com.go2geda.Go2GedaApp.exceptions.Go2gedaBaseException;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
 import com.go2geda.Go2GedaApp.repositories.CommuterRepository;
 import com.go2geda.Go2GedaApp.repositories.UserRepository;
 import com.go2geda.Go2GedaApp.utils.BuildEmailRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.REGISTRATION_SUCCESSFUL;
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.VERIFIED_SUCCESSFUL;
+import static com.go2geda.Go2GedaApp.exceptions.ExceptionMessage.EMAIL_ALREADY_EXIST;
 import static com.go2geda.Go2GedaApp.exceptions.ExceptionMessage.USER_NOT_FOUND;
 @Service @AllArgsConstructor
 public class Go2gedaCommuterService implements CommuterService{
     private final BuildEmailRequest buildEmailRequest;
     private final CommuterRepository commuterRepository;
     private final MailService mailService;
-    private final UserRepository userRepository;
+
     @Override
     public RegisterUserResponse register(CommuterRegisterUserRequest request) {
-        String firstName = request.getFirstName();
+        try{
+            String firstName = request.getFirstName();
         String lastName = request.getLastName();
         String email = request.getEmail();
 
@@ -48,20 +54,22 @@ public class Go2gedaCommuterService implements CommuterService{
         Commuter newCommuter = new Commuter();
         newCommuter.setUser(newUser);
 
-        commuterRepository.save(newCommuter);
+            EmailSenderRequest emailSenderRequest = buildEmailRequest.buildEmailRequestCommuter(newUser);
+            mailService.send(emailSenderRequest);
 
-        EmailSenderRequest emailSenderRequest = buildEmailRequest.buildEmailRequestCommuter(newUser);
-        mailService.send(emailSenderRequest);
-
-        RegisterUserResponse response = new RegisterUserResponse();
-        response.setMessage(REGISTRATION_SUCCESSFUL.name());
-        response.setFirstName(basicInformation.getFirstName());
-        response.setLastName(basicInformation.getLastName());
-        response.setPhoneNumber(basicInformation.getPhoneNumber());
-        response.setPassword(basicInformation.getPassword());
-        response.setEmail(basicInformation.getEmail());
-        response.setId(newCommuter.getId());
-        return response;
+            Commuter savedCommuter = commuterRepository.save(newCommuter);
+            RegisterUserResponse response = new RegisterUserResponse();
+            response.setMessage(REGISTRATION_SUCCESSFUL.name());
+            response.setFirstName(basicInformation.getFirstName());
+            response.setLastName(basicInformation.getLastName());
+            response.setPhoneNumber(basicInformation.getPhoneNumber());
+            response.setPassword(basicInformation.getPassword());
+            response.setEmail(basicInformation.getEmail());
+            response.setId(savedCommuter.getId());
+            return response;
+        }catch(DataIntegrityViolationException e){
+            throw new Go2gedaBaseException(EMAIL_ALREADY_EXIST.name());
+        }
     }
 
     @Override

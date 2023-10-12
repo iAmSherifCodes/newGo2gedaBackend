@@ -4,6 +4,7 @@ import com.go2geda.Go2GedaApp.data.models.Driver;
 import com.go2geda.Go2GedaApp.dtos.request.*;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
+import com.go2geda.Go2GedaApp.exceptions.Go2gedaBaseException;
 import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
 import com.go2geda.Go2GedaApp.repositories.DriverRepository;
 import com.go2geda.Go2GedaApp.services.DriverService;
@@ -21,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest @Slf4j
 //@ActiveProfiles("dev")
@@ -48,6 +51,28 @@ public class DriverServiceTest {
         RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
 
         assertThat(firstDriver).isNotNull();
+    }
+
+    @Test
+    void driverCannotRegisterWithDuplicateEmail(){
+        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
+        firstDriverUser.setEmail("oluchi@gmail.com");
+        firstDriverUser.setFirstName("Oluchi");
+        firstDriverUser.setLastName("Duru");
+        firstDriverUser.setPhoneNumber("08119863971");
+        firstDriverUser.setPassword("DuruOluchi");
+
+        assertThrows(Go2gedaBaseException.class, ()->driverService.register(firstDriverUser));
+
+//        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
+//        assertThat(firstDriver).isNotNull();
+
+
+
+
+        assertThat(driverService.emailExist("oluchi@gmail.com")).isTrue();
+
+
     }
 
 

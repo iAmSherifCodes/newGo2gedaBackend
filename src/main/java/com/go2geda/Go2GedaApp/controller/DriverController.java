@@ -4,6 +4,7 @@ import com.go2geda.Go2GedaApp.data.models.Trip;
 import com.go2geda.Go2GedaApp.dtos.request.*;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
+import com.go2geda.Go2GedaApp.exceptions.Go2gedaBaseException;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
 import com.go2geda.Go2GedaApp.services.DriverService;
@@ -13,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.go2geda.Go2GedaApp.exceptions.ExceptionMessage.EMAIL_ALREADY_EXIST;
+
 @RestController
 @RequestMapping("/api/v1/go2geda/driver")
 @CrossOrigin("*")
@@ -20,8 +24,12 @@ import java.util.List;
 public class DriverController {
     private final DriverService driverService;
     @PostMapping("/registerDriver")
-    public ResponseEntity<RegisterUserResponse> register(@RequestBody DriverRegisterUserRequest registerUserRequest) {
-        return new ResponseEntity<>(driverService.register(registerUserRequest), HttpStatus.OK);
+    public ResponseEntity<?> register(@RequestBody DriverRegisterUserRequest registerUserRequest) {
+        try{
+            return new ResponseEntity<>(driverService.register(registerUserRequest), HttpStatus.OK);
+        } catch (Go2gedaBaseException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/verifyAddress")
