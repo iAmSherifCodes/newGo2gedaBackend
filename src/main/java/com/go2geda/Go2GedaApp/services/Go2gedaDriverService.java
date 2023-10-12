@@ -5,19 +5,13 @@ import com.go2geda.Go2GedaApp.dtos.request.*;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
 import com.go2geda.Go2GedaApp.exceptions.Go2gedaBaseException;
-import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
-import com.go2geda.Go2GedaApp.exceptions.UserDoesNotExist;
 import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
-import com.go2geda.Go2GedaApp.repositories.BasicInformationRepository;
 import com.go2geda.Go2GedaApp.repositories.DriverRepository;
-import com.go2geda.Go2GedaApp.repositories.TripRepository;
 import com.go2geda.Go2GedaApp.utils.BuildEmailRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Optional;
 
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.REGISTRATION_SUCCESSFUL;
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.VERIFIED_SUCCESSFUL;
@@ -37,14 +31,11 @@ public class Go2gedaDriverService implements  DriverService{
     private final MailService mailService;
     @Override
     public RegisterUserResponse register(DriverRegisterUserRequest request) {
-        try{
-
+//        try{
             String email = request.getEmail();
 //        if (emailExist(email)) throw new Go2gedaBaseException(EMAIL_ALREADY_EXIST.name());
-
-        String firstName = request.getFirstName();
+            String firstName = request.getFirstName();
             String lastName = request.getLastName();
-
             String password = request.getPassword();
             String phoneNumber = request.getPhoneNumber();
 
@@ -76,9 +67,9 @@ public class Go2gedaDriverService implements  DriverService{
             response.setId(savedDriver.getId());
             response.setEmail(savedDriver.getUser().getBasicInformation().getEmail());
             return response;
-        }catch(DataIntegrityViolationException e){
-            throw new Go2gedaBaseException(EMAIL_ALREADY_EXIST.name());
-        }
+//        }catch(DataIntegrityViolationException e){
+//            throw new Go2gedaBaseException(EMAIL_ALREADY_EXIST.name());
+//        }
     }
 
     public boolean emailExist(String email){
