@@ -122,6 +122,9 @@ public class TripServiceImplementation implements TripService {
         Trip trip = new Trip();
 
         Optional<Driver> driver= driverRepository.findDriverById(createTripRequest.getDriverId());
+
+        System.out.println(createTripRequest.getDriverId());
+
         Driver foundDriver = driver.orElseThrow(()->new NotFoundException("Driver with this id does not exist"));
         trip.setPickup(createTripRequest.getFrom());
         trip.setDestination(createTripRequest.getTo());

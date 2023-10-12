@@ -34,7 +34,7 @@ public Review createReview(ReviewRequest reviewRequest) {
         review.setReview(reviewRequest.getReview());
         review.setSenderId(reviewRequest.getSenderId());
         review.setReceiverId(reviewRequest.getReceiverId());
-        review.setSenderLastName(firstName);
+        review.setSenderFirstName(firstName);
         review.setSenderLastName(lastName);
         Review savedReview = reviewRepository.save(review);
         receiver.get().getReviews().add(savedReview);
