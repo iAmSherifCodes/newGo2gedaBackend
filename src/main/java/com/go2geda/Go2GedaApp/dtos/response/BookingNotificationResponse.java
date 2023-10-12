@@ -9,4 +9,5 @@ public class BookingNotificationResponse {
     private String firstName;
     private String lastName;
     private String url;
+    private Long tripId;
 }

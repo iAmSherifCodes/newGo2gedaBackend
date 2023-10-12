@@ -71,9 +71,8 @@ public class Go2gedaDriverService implements  DriverService{
             response.setEmail(savedDriver.getUser().getBasicInformation().getEmail());
             return response;
         }
-
-
-    @Override
+g
+        @Override
     public Driver findDriverByEmail(String email) throws UserNotFound {
         return driverRepository.findDriverByEmail(email).orElseThrow(()-> new UserNotFound(USER_NOT_FOUND.name()));
     }
