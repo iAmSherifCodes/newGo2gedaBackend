@@ -27,7 +27,6 @@ import static com.go2geda.Go2GedaApp.exceptions.ExceptionMessage.USER_NOT_FOUND;
 public class TripServiceImplementation implements TripService {
 
     private final DriverRepository driverRepository;
-    private final BasicInformationRepository basicInformationRepository;
     private final CommuterRepository commuterRepository;
     private final TripRepository tripRepository;
     private final NotificationRepository notificationRepository;
@@ -222,6 +221,7 @@ public class TripServiceImplementation implements TripService {
         acceptRequestNotificationResponse.setUrl(foundTrip.getDriver().getUser().getProfilePicture());
         return acceptRequestNotificationResponse;
     }
+
 
     @Override
     public RejectRequestNotificationResponse rejectTripRequest(AcceptAndRejectRequest acceptAndRejectRequest) throws NotFoundException {

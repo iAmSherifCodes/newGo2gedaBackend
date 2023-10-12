@@ -37,10 +37,10 @@ public class Go2gedaDriverService implements  DriverService{
     private final MailService mailService;
     @Override
     public RegisterUserResponse register(DriverRegisterUserRequest request) {
-//        try{
+        try{
 
             String email = request.getEmail();
-        if (emailExist(email)) throw new Go2gedaBaseException(EMAIL_ALREADY_EXIST.name());
+//        if (emailExist(email)) throw new Go2gedaBaseException(EMAIL_ALREADY_EXIST.name());
 
         String firstName = request.getFirstName();
             String lastName = request.getLastName();
@@ -76,9 +76,9 @@ public class Go2gedaDriverService implements  DriverService{
             response.setId(savedDriver.getId());
             response.setEmail(savedDriver.getUser().getBasicInformation().getEmail());
             return response;
-//        }catch(DataIntegrityViolationException e){
-//            throw new Go2gedaBaseException(EMAIL_ALREADY_EXIST.name());
-//        }
+        }catch(DataIntegrityViolationException e){
+            throw new Go2gedaBaseException(EMAIL_ALREADY_EXIST.name());
+        }
     }
 
     public boolean emailExist(String email){

@@ -25,11 +25,11 @@ public class DriverController {
     private final DriverService driverService;
     @PostMapping("/registerDriver")
     public ResponseEntity<?> register(@RequestBody DriverRegisterUserRequest registerUserRequest) {
-        try{
+//        try{
             return new ResponseEntity<>(driverService.register(registerUserRequest), HttpStatus.OK);
-        } catch (Go2gedaBaseException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        } catch (Go2gedaBaseException e){
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     @PostMapping("/verifyAddress")
