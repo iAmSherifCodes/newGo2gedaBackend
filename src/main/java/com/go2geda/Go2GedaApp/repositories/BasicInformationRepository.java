@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface BasicInformationRepository extends JpaRepository<BasicInformation, Long> {
     boolean existsByEmail(String email);
 
-    Optional<User> findByEmail(String email);
+    Optional<BasicInformation> findByEmail(String email);
 
-    Optional<BasicInformation> findBasicInformationByEmailAndPassword(String email, String password);
 }

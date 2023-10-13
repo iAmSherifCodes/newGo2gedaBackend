@@ -67,6 +67,7 @@ public class Go2gedaDriverService implements  DriverService{
             response.setId(savedDriver.getId());
             response.setEmail(savedDriver.getUser().getBasicInformation().getEmail());
             return response;
+
 //        }catch(DataIntegrityViolationException e){
 //            throw new Go2gedaBaseException(EMAIL_ALREADY_EXIST.name());
 //        }

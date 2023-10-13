@@ -93,6 +93,7 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
+
     @PostMapping("/acceptTrip")
     public ResponseEntity<AcceptRequestNotificationResponse> acceptTripRequest(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
         try {
@@ -101,6 +102,7 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
+
     @PostMapping("/rejectTrip")
     public ResponseEntity<RejectRequestNotificationResponse> rejectTripRequest(@RequestBody AcceptAndRejectRequest acceptAndRejectRequest) {
         try {

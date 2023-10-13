@@ -6,13 +6,14 @@ import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
 import com.go2geda.Go2GedaApp.exceptions.Go2gedaBaseException;
 import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
-import com.go2geda.Go2GedaApp.repositories.DriverRepository;
 import com.go2geda.Go2GedaApp.services.DriverService;
+import com.go2geda.Go2GedaApp.services.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,17 +27,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest @Slf4j
-//@ActiveProfiles("dev")
+@ActiveProfiles("dev")
 public class DriverServiceTest {
-//    @Autowired
     private final DriverService driverService;
-//    @Autowired
-//    private final AppConfig appConfig;
+    private final LoginService loginService;
 
     @Autowired
-    public DriverServiceTest(DriverService driverService) {
+    public DriverServiceTest(DriverService driverService, LoginService loginService) {
         this.driverService = driverService;
-//        this.appConfig = appConfig;
+        this.loginService = loginService;
     }
 
     @Test
@@ -64,12 +63,6 @@ public class DriverServiceTest {
 
         assertThrows(Go2gedaBaseException.class, ()->driverService.register(firstDriverUser));
 
-//        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
-//        assertThat(firstDriver).isNotNull();
-
-
-
-
         assertThat(driverService.emailExist("oluchi@gmail.com")).isTrue();
 
 
@@ -92,12 +85,14 @@ public class DriverServiceTest {
 
 
         LoginRequest request = new LoginRequest();
-        request.setEmail("driverlogin@gmail.com");
+        request.setEmail("driverlogin2@gmail.com");
         request.setPassword("deyplaypassword");
 
-//        LoginResponse response = userService.login(request);
+        RegisterUserResponse response = loginService.Login(request);
 //
-//        assertThat(response).isNotNull();
+        assertThat(response).isNotNull();
+        assertThat(response.getId()).isNotNull();
+
     }
 
     @Test
