@@ -88,7 +88,7 @@ public class DriverServiceTest {
         request.setEmail("driverlogin2@gmail.com");
         request.setPassword("deyplaypassword");
 
-        RegisterUserResponse response = loginService.Login(request);
+        RegisterUserResponse response = loginService.login(request);
 //
         assertThat(response).isNotNull();
         assertThat(response.getId()).isNotNull();

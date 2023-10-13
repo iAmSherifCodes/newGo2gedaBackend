@@ -22,7 +22,7 @@ public class LoginService {
     private final CommuterRepository commuterRepository;
     private final UserRepository userRepository;
 
-    public RegisterUserResponse Login(LoginRequest loginRequest){
+    public RegisterUserResponse login(LoginRequest loginRequest) throws Go2gedaBaseException{
 
         String emailRequest = loginRequest.getEmail().strip().toLowerCase();
         String password = loginRequest.getPassword();
@@ -37,12 +37,12 @@ public class LoginService {
             if (userRole.equals(Role.DRIVER)){
                 Driver foundDriver = driverRepository.findDriverByEmail(foundUser.getBasicInformation().getEmail()).orElseThrow(()-> new Go2gedaBaseException(USER_WITH_EMAIL_NOT_FOUND.name()));;
                 response.setId(foundDriver.getId());
-                response.setMessage(LOGIN_SUCCESSFUL.name());
+                response.setMessage(String.valueOf(Role.DRIVER));
             }
             if (userRole.equals(Role.COMMUTER)){
                 Commuter foundCommuter = commuterRepository.findCommuterByEmail(foundUser.getBasicInformation().getEmail()).orElseThrow(()-> new Go2gedaBaseException(USER_WITH_EMAIL_NOT_FOUND.name()));;
                 response.setId(foundCommuter.getId());
-                response.setMessage(LOGIN_SUCCESSFUL.name());
+                response.setMessage(String.valueOf(Role.COMMUTER));
             }
 
             return response;

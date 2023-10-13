@@ -2,11 +2,14 @@ package com.go2geda.Go2GedaApp.controller;
 
 import com.go2geda.Go2GedaApp.dtos.request.LoginRequest;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
+import com.go2geda.Go2GedaApp.exceptions.Go2gedaBaseException;
 import com.go2geda.Go2GedaApp.services.LoginService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.go2geda.Go2GedaApp.exceptions.ExceptionMessage.USER_WITH_EMAIL_NOT_FOUND;
 
 @RestController
 @CrossOrigin("*")
@@ -18,7 +21,11 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<RegisterUserResponse> login(@RequestBody LoginRequest loginRequest){
-        return new ResponseEntity<>(loginService.Login(loginRequest), HttpStatus.FOUND);
+        try{
+            return new ResponseEntity<>(loginService.login(loginRequest), HttpStatus.OK);
+        }catch (RuntimeException e){
+            throw new Go2gedaBaseException(USER_WITH_EMAIL_NOT_FOUND.name());
+        }
     }
 
 }
