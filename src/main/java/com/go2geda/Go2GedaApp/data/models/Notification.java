@@ -20,6 +20,6 @@ public class Notification {
     private String senderLastName;
     @Column(length = 255)
     private String message;
-//    @Enumerated(EnumType.STRING)
-//    private NotificationStatus status;
+    @Enumerated(EnumType.STRING)
+    private NotificationStatus status;
 }

@@ -211,7 +211,7 @@ public class TripServiceImplementation implements TripService {
         notification.setReceiverId(foundCommuter.getId());
         notification.setSenderId(foundTrip.getDriver().getId());
         notification.setMessage("you request to join  has been accepted");
-//        notification.setStatus(NotificationStatus.ACCEPTED);
+        notification.setStatus(NotificationStatus.ACCEPTED);
         Notification savedNotification = notificationRepository.save(notification);
         foundCommuter.getNotifications().add(savedNotification);
         commuterRepository.save(foundCommuter);
@@ -236,7 +236,7 @@ public class TripServiceImplementation implements TripService {
         notification.setReceiverId(foundCommuter.getId());
         notification.setSenderId(foundTrip.getDriver().getId());
         notification.setMessage("you request to join "+ foundTrip.getPickup() + foundTrip.getDestination() +" has been rejected");
-//        notification.setStatus(NotificationStatus.REJECTED);
+        notification.setStatus(NotificationStatus.REJECTED);
         Notification savedNotification = notificationRepository.save(notification);
         foundCommuter.getNotifications().add(savedNotification);
 
@@ -281,22 +281,32 @@ public class TripServiceImplementation implements TripService {
     @Override
     public List<Trip> viewCommuterBookedTrips(Long commuterId) throws NotFoundException {
         List<Trip> commuterBookedTrip = new ArrayList<>();
-        List<Trip> allTrip = tripRepository.findAll();
-        boolean bookedTrip = false;
-        for (int i = 0; i < allTrip.size(); i++) {
-            if (allTrip.get(i).getTripStatus()==TripStatus.CREATED){
-                for (int j = 0; j < allTrip.get(i).getCommuter().size(); j++) {
-                    if(allTrip.get(i).getCommuter().get(j).getId().equals(commuterId)){
-                        commuterBookedTrip.add(allTrip.get(i));
-                        bookedTrip = true;
-                    }
-                }
+        var foundCommuter = commuterRepository.findById(commuterId);
+        var commuterNotifications = foundCommuter.get().getNotifications();
+        for (int i = 0; i < commuterNotifications.size(); i++) {
+            if (commuterNotifications.get(i).getStatus()==NotificationStatus.ACCEPTED){
+                var bookedTrips = tripRepository.findById(commuterNotifications.get(i).getTripId());
+                commuterBookedTrip.add(bookedTrips.get());
             }
         }
-        if (!bookedTrip) {
-            throw new NotFoundException("No Available Trip For the Route");
-        }
         return commuterBookedTrip;
+//        List<Trip> commuterBookedTrip = new ArrayList<>();
+//        List<Trip> allTrip = tripRepository.findAll();
+//        boolean bookedTrip = false;
+//        for (int i = 0; i < allTrip.size(); i++) {
+//            if (allTrip.get(i).getTripStatus()==TripStatus.CREATED){
+//                for (int j = 0; j < allTrip.get(i).getCommuter().size(); j++) {
+//                    if(allTrip.get(i).getCommuter().get(j).getId().equals(commuterId)){
+//                        commuterBookedTrip.add(allTrip.get(i));
+//                        bookedTrip = true;
+//                    }
+//                }
+//            }
+//        }
+//        if (!bookedTrip) {
+//            throw new NotFoundException("No Available Trip For the Route");
+//        }
+//        return commuterBookedTrip;
     }
 
     @Override
