@@ -10,13 +10,11 @@ import com.go2geda.Go2GedaApp.exceptions.Go2gedaBaseException;
 import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
 import com.go2geda.Go2GedaApp.repositories.CommuterRepository;
-import com.go2geda.Go2GedaApp.repositories.UserRepository;
 import com.go2geda.Go2GedaApp.utils.BuildEmailRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.sql.SQLIntegrityConstraintViolationException;
 
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.REGISTRATION_SUCCESSFUL;
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.VERIFIED_SUCCESSFUL;
@@ -27,6 +25,7 @@ public class Go2gedaCommuterService implements CommuterService{
     private final BuildEmailRequest buildEmailRequest;
     private final CommuterRepository commuterRepository;
     private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public RegisterUserResponse register(CommuterRegisterUserRequest request) {
@@ -44,7 +43,8 @@ public class Go2gedaCommuterService implements CommuterService{
         basicInformation.setFirstName(firstName);
         basicInformation.setLastName(lastName);
         basicInformation.setEmail(email);
-        basicInformation.setPassword(password);
+        String passwordHash = passwordEncoder.encode(password);
+        basicInformation.setPassword(passwordHash);
         basicInformation.setPhoneNumber(phoneNumber);
 
         newUser.setRole(Role.COMMUTER);
@@ -97,9 +97,9 @@ public class Go2gedaCommuterService implements CommuterService{
     @Override
     public RegisterUserResponse findCommuterById(Long commuterId) throws NotFoundException {
         var commuter = commuterRepository.findById(commuterId);
-        var foundCommuter = commuter.orElseThrow(()-> new NotFoundException("commuter not found"));
+        Commuter foundCommuter = commuter.orElseThrow(()-> new NotFoundException("commuter not found"));
         var user = foundCommuter.getUser();
-        var basicInformation =user.getBasicInformation();
+        var basicInformation = user.getBasicInformation();
         RegisterUserResponse response = new RegisterUserResponse();
         response.setMessage(REGISTRATION_SUCCESSFUL.name());
         response.setFirstName(basicInformation.getFirstName());

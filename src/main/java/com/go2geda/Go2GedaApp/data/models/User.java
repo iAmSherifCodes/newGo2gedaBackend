@@ -3,12 +3,14 @@ package com.go2geda.Go2GedaApp.data.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Entity
 @Setter
 @Getter
+@ToString
 @Table(name= "Go2GedaUser")
 public class User {
     public boolean isActive;

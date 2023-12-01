@@ -10,7 +10,6 @@ import com.go2geda.Go2GedaApp.exceptions.NotFoundException;
 public interface CommuterService {
     RegisterUserResponse register(CommuterRegisterUserRequest request);
     OkResponse verifyAddress(AddressVerificationRequest addressVerificationRequest, String email);
-
     RegisterUserResponse findCommuterById(Long commuterId) throws NotFoundException;
 
 }

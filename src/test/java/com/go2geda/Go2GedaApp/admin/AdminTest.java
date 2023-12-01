@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -27,10 +28,33 @@ public class AdminTest {
 
     @Autowired
     public AdminTest(AdminService adminService, CommuterService commuterService, Go2gedaDriverService  driverService) {
-
         this.adminService = adminService;
         this.commuterService = commuterService;
         this.driverService = driverService;
+    }
+
+    public RegisterUserResponse registerADriverWithEmail(String email){
+        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
+        firstDriverUser.setEmail(email+"@gmail.com");
+        firstDriverUser.setFirstName("Oluchi");
+        firstDriverUser.setLastName("Duru");
+        firstDriverUser.setPhoneNumber("08119863971");
+        firstDriverUser.setPassword("DuruOluchi");
+
+        RegisterUserResponse response = driverService.register(firstDriverUser);
+        return response;
+    }
+
+    public RegisterUserResponse registerACommuterWithEmail(String email){
+        CommuterRegisterUserRequest firstCommuterUser = new CommuterRegisterUserRequest();
+        firstCommuterUser.setEmail(email+"@gmail.com");
+        firstCommuterUser.setFirstName("woman");
+        firstCommuterUser.setLastName("Playplay");
+        firstCommuterUser.setPhoneNumber("90787878");
+        firstCommuterUser.setPassword("deyplaypassword");
+
+        RegisterUserResponse response = commuterService.register(firstCommuterUser);
+        return response;
     }
     @Test
     public void testThatAdminCanRegister(){
@@ -43,61 +67,46 @@ public class AdminTest {
         var registeredAdmin = adminService.registerAdmin(adminRegistrationRequest);
         assertEquals("Obinali",registeredAdmin.getLastName());
     }
+
     @Test
     public void testThatAdminCanFindAllCommuters(){
+        registerACommuterWithEmail("testThatAdminCanFindAllCommters");
+        registerACommuterWithEmail("testThatAdminCanFindAllCommters1");
         List<Commuter> allCommuters = adminService.findAllCommuter();
-        assertEquals(2,allCommuters.size());
+        assertThat(allCommuters.size()).isGreaterThan(1);
     }
 
     @Test
     public void testThatAdminCanFindAllDrivers(){
+        registerADriverWithEmail("testTmllDriver");
+        registerADriverWithEmail("tindAllDrivers1");
         List<Driver> allDrivers = adminService.findAllDriver();
-        assertEquals(0,allDrivers.size());
+        assertThat(allDrivers.size()).isGreaterThan(1);
     }
+
     @Test
     public void testThatAdminCanSuspendCommuterAccount(){
-        CommuterRegisterUserRequest firstCommuterUser = new CommuterRegisterUserRequest();
-        firstCommuterUser.setEmail("woman@gmail.com");
-        firstCommuterUser.setFirstName("woman");
-        firstCommuterUser.setLastName("Playplay");
-        firstCommuterUser.setPhoneNumber("90787878");
-        firstCommuterUser.setPassword("deyplaypassword");
 
-        RegisterUserResponse response = commuterService.register(firstCommuterUser);
+        RegisterUserResponse response = registerACommuterWithEmail("testThatAdminCanSuspendCommuterAccount");
         adminService.suspendCommuterAccount(response.getId());
         var foundCommuter = adminService.findCommuterById(response.getId());
         assertEquals(false,foundCommuter.getUser().isActive);
     }
+
     @Test
     public void testThatAdminCanSuspendDriverAccount(){
 
-        DriverRegisterUserRequest firstDriverUser = new DriverRegisterUserRequest();
-        firstDriverUser.setEmail("deyplay3@gmail.com");
-        firstDriverUser.setFirstName("Dey");
-        firstDriverUser.setLastName("Play");
-        firstDriverUser.setPhoneNumber("90787878");
-        firstDriverUser.setPassword("deyplaypassword");
-
-        RegisterUserResponse firstDriver = driverService.register(firstDriverUser);
+        RegisterUserResponse firstDriver = registerADriverWithEmail("testThatAdminCanSuspendDriverAccount");
         var foundDriver = adminService.findDriverById(firstDriver.getId());
         assertEquals(false,foundDriver.getUser().isActive);
     }
     @Test
     public void testThatAdminCanFindReviewByCustomerId(){CommuterRegisterUserRequest firstCommuterUser = new CommuterRegisterUserRequest();
-        firstCommuterUser.setEmail("man@gmail.com");
-        firstCommuterUser.setFirstName("woman");
-        firstCommuterUser.setLastName("Playplay");
-        firstCommuterUser.setPhoneNumber("90787878");
-        firstCommuterUser.setPassword("deyplaypassword");
-        RegisterUserResponse response = commuterService.register(firstCommuterUser);
+        RegisterUserResponse response = registerACommuterWithEmail("testThatAdminCanFindReviewByCustomerId");
         var customerReviews = adminService.findReviewByCommuterId(response.getId());
         assertEquals(0,customerReviews.size());
     }
-//    @Test
-//    public void testThatAdminCanFindReviewByDriverId(){
-//        var driverReviews = adminService.findReviewByDriverId();
-//        assertEquals(0,driverReviews.size());
-//    }
+
     @Test
     public void testThatAdminCanFindAllReviews(){
         var allReviews = adminService.getAllReviews();

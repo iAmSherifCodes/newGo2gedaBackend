@@ -32,6 +32,8 @@ public class DriverController {
 //        }
     }
 
+    // "/registerDriver" , "/verifyAddress", "/verifyAccountDetails/{from}", "/verifyDriverLicense/{from}"
+
     @PostMapping("/verifyAddress")
     public ResponseEntity<OkResponse> verifyAddress(@RequestBody AddressVerificationRequest addressVerificationRequest, String email) {
         try {

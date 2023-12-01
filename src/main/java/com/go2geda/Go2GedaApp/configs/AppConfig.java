@@ -14,9 +14,8 @@ import static org.springframework.http.HttpMethod.*;
 @Configuration
 public class AppConfig {
     public final static  String SPACE = " ";
-    public static final String ACTIVATE_ACCOUNT_PATH="/user/activate?code=";
+    public static final String ACTIVATE_ACCOUNT_PATH = "/user/activate?code=";
     public final static String WELCOME_MAIL_SUBJECT = "Welcome to Go2Geda Platform";
-
 
     @Value("${mail.api.key}")
     private String mailApiKey;
@@ -24,6 +23,14 @@ public class AppConfig {
     @Value("${mail.brevo.address}")
     private String brevoMailAddress;
 
+    @Value("${jwt.secret}")
+    private String jwtAlgorithmSecret;
+
+    @Value("${jwt.verify.claim}")
+    private String jwtVerifyClaim;
+
+    @Value("${jwt.access.token.claim}")
+    private String jwtAccessTokenClaim;
 
     @Value("${app.base.url}")
     private String baseUrl;
@@ -36,6 +43,11 @@ public class AppConfig {
 
     @Value("${name.cloudinary.cloud}")
     private String cloudName;
+
+
+    public String getJwtAccessTokenClaim() {
+        return jwtAccessTokenClaim;
+    }
 
     public String getDriverLicenseFrontPictureTest() {
         return driverLicenseFrontPictureTest;

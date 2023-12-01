@@ -10,7 +10,7 @@ import static com.go2geda.Go2GedaApp.utils.AppUtils.APP_NAME;
 
 @Setter
 @Getter
-public class     EmailSenderRequest {
+public class EmailSenderRequest {
 
     private final MailInfo sender = new MailInfo(APP_NAME, APP_EMAIL);
     //    @JsonProperty("to")

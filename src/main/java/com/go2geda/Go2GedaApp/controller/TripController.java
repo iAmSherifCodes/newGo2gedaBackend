@@ -32,6 +32,7 @@ public class TripController {
             throw new RuntimeException(e);
         }
     }
+
     @PostMapping("/cancelTrip/{tripId}")
     public ResponseEntity<OkResponse> cancelATrip(@PathVariable Long tripId){
         try {
@@ -134,9 +135,9 @@ public class TripController {
         return new ResponseEntity<>(tripService.getDriversTrips(id),HttpStatus.OK);
     }
 
-    @GetMapping("/trip-requests/{id}")
-    public ResponseEntity<List<Notification>> getTripRequest(@PathVariable Long id){
-        return new ResponseEntity<>(tripService.getTripRequests(id),HttpStatus.OK);
+    @GetMapping("/trip-requests/{driverId}")
+    public ResponseEntity<List<Notification>> getTripRequest(@PathVariable Long driverId){
+        return new ResponseEntity<>(tripService.getTripRequests(driverId),HttpStatus.OK);
     }
 
     @GetMapping("/viewDriverTrips/{driverId}")

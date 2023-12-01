@@ -18,7 +18,7 @@ import static com.go2geda.Go2GedaApp.utils.AppUtils.*;
 @Configuration
 public class BuildEmailRequest {
     private AppConfig appConfig;
-
+    private final AppUtils appUtils;
     public EmailSenderRequest buildEmailRequest(User savedUser){
         EmailSenderRequest request =new EmailSenderRequest();
         List<MailInfo> recipients = new ArrayList<>();
@@ -26,10 +26,10 @@ public class BuildEmailRequest {
         recipients.add(recipient);
         request.setTo(recipients);
         request.setSubject(WELCOME_MAIL_SUBJECT);
-        String activationLink =
-                generateActivationLink(appConfig.getBaseUrl(), savedUser.getBasicInformation().getEmail());
+//        String activationLink =
+//                generateActivationLink(appConfig.getBaseUrl(), savedUser.getBasicInformation().getEmail());
         String emailTemplate = getMailTemplate();
-        String mailContent = String.format(emailTemplate, savedUser.getBasicInformation().getFirstName(), activationLink);
+        String mailContent = String.format(emailTemplate, savedUser.getBasicInformation().getFirstName());//, activationLink);
         request.setHtmlContent(mailContent);
         return request;
     }
@@ -40,8 +40,7 @@ public class BuildEmailRequest {
         recipients.add(recipient);
         request.setTo(recipients);
         request.setSubject(WELCOME_MAIL_SUBJECT);
-        String activationLink =
-                generateActivationLink(appConfig.getBaseUrl(), savedUser.getBasicInformation().getEmail());
+        String activationLink = appUtils.generateActivationLink(appConfig.getBaseUrl(), savedUser.getBasicInformation().getEmail());
         String emailTemplate = getMailTemplateCommuter();
         String mailContent = String.format(emailTemplate, savedUser.getBasicInformation().getFirstName(), activationLink);
         request.setHtmlContent(mailContent);

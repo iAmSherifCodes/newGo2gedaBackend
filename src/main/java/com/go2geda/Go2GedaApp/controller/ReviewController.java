@@ -28,6 +28,7 @@ public class ReviewController {
                         LocalDateTime.now(), response)
                 ,HttpStatus.CREATED);
     }
+
     @GetMapping("/all")
     public ResponseEntity<BaseResponse> findReviewForUser(@PathVariable  Long id){
             List<Review> reviews = review.getReviewOfAUsers(id);

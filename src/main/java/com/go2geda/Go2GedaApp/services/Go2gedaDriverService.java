@@ -4,18 +4,16 @@ import com.go2geda.Go2GedaApp.data.models.*;
 import com.go2geda.Go2GedaApp.dtos.request.*;
 import com.go2geda.Go2GedaApp.dtos.response.OkResponse;
 import com.go2geda.Go2GedaApp.dtos.response.RegisterUserResponse;
-import com.go2geda.Go2GedaApp.exceptions.Go2gedaBaseException;
 import com.go2geda.Go2GedaApp.exceptions.UserNotFound;
 import com.go2geda.Go2GedaApp.repositories.DriverRepository;
 import com.go2geda.Go2GedaApp.utils.BuildEmailRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.REGISTRATION_SUCCESSFUL;
 import static com.go2geda.Go2GedaApp.dtos.response.ResponseMessage.VERIFIED_SUCCESSFUL;
-import static com.go2geda.Go2GedaApp.exceptions.ExceptionMessage.EMAIL_ALREADY_EXIST;
 import static com.go2geda.Go2GedaApp.exceptions.ExceptionMessage.USER_NOT_FOUND;
 import static com.go2geda.Go2GedaApp.utils.AppUtils.UPLOAD_SUCCESSFUL;
 import static com.go2geda.Go2GedaApp.utils.AppUtils.VERIFICATION_SUCCESSFUL;
@@ -26,9 +24,9 @@ public class Go2gedaDriverService implements  DriverService{
 
     private final DriverRepository driverRepository;
     private final CloudService cloudService;
-
     private final BuildEmailRequest buildEmailRequest;
     private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
     @Override
     public RegisterUserResponse register(DriverRegisterUserRequest request) {
 //        try{
@@ -47,7 +45,8 @@ public class Go2gedaDriverService implements  DriverService{
             basicInformation.setFirstName(firstName);
             basicInformation.setLastName(lastName);
             basicInformation.setEmail(email);
-            basicInformation.setPassword(password);
+            String passwordHash = passwordEncoder.encode(password);
+            basicInformation.setPassword(passwordHash);
             basicInformation.setPhoneNumber(phoneNumber);
 
             newUser.setBasicInformation(basicInformation);

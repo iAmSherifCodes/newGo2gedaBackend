@@ -19,13 +19,13 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    @PostMapping("/login")
-    public ResponseEntity<RegisterUserResponse> login(@RequestBody LoginRequest loginRequest){
-        try{
-            return new ResponseEntity<>(loginService.login(loginRequest), HttpStatus.OK);
-        }catch (RuntimeException e){
-            throw new Go2gedaBaseException(USER_WITH_EMAIL_NOT_FOUND.name());
-        }
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<RegisterUserResponse> login(@RequestBody LoginRequest loginRequest){
+//        try{
+//            return new ResponseEntity<>(loginService.login(loginRequest), HttpStatus.OK);
+//        }catch (RuntimeException e){
+//            throw new Go2gedaBaseException(USER_WITH_EMAIL_NOT_FOUND.name());
+//        }
+//    }
 
 }

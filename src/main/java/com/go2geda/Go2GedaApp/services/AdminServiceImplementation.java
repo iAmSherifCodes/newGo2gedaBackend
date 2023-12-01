@@ -22,7 +22,6 @@ public class AdminServiceImplementation implements AdminService{
     private final AdminRepository adminRepository;
     private final TripRepository tripRepository;
 
-
     @Override
     public RegisterUserResponse registerAdmin(AdminRegistrationRequest adminRegistrationRequest) {
         Admin admin = new Admin();
